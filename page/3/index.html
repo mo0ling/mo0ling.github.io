@@ -1,0 +1,523 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>墨凌的博客</title><meta name="author" content="墨凌"><meta name="copyright" content="墨凌"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="平常心">
+<meta property="og:type" content="website">
+<meta property="og:title" content="墨凌的博客">
+<meta property="og:url" content="https://mo0ling.github.io/page/3/index.html">
+<meta property="og:site_name" content="墨凌的博客">
+<meta property="og:description" content="平常心">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mo0ling.github.io/assets/tx.jpg">
+<meta property="article:author" content="墨凌">
+<meta property="article:tag" content="Java,MySQL,算法,代码,博客,Butterfly,Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mo0ling.github.io/assets/tx.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://mo0ling.github.io/page/3/index.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"OJQXVBAQG1","apiKey":"5eaa2e0c3fca2242ca816a7a80f71636","indexName":"hexoblog","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"已经过期","messageNext":"天, 这篇文章需要淘汰。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"var(--theme-color)","bgDark":"#191919","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.10.1/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '墨凌的博客',
+  isPost: false,
+  isHome: true,
+  isHighlightShrink: false,
+  isToc: false,
+  postUpdate: '2023-11-29 09:33:01'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/fonts/font.css"><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (true) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/assets/tx.jpg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div></div></div><div class="page" id="body-wrap"><header class="full_page" id="page-header" style="background-image: url('/assets/bj.png')"><nav id="nav"><span id="blog-info"><a href="/" title="墨凌的博客"><span class="site-name">墨凌的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="site-info"><h1 id="site-title">墨凌的博客</h1><div id="site-subtitle"><span id="subtitle"></span></div><div id="site_social_icons"><a class="social-icon" href="https://github.com/mo0ling" target="_blank" title="Github"><i class="fa-brands fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:mo8ling@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a><a class="social-icon" href="https://user.qzone.qq.com/761336738/infocenter" target="_blank" title="QQ"><i class="fa-brands fa-qq" style="color: #hdhfbb;"></i></a></div></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts" id="recent-posts"><div class="recent-post-item"><div class="post_cover left"><a href="/posts/0.html" title="无题"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="无题"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/0.html" title="无题">无题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T08:09:28.156Z" title="发表于 2023-11-13 16:09:28">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T08:09:28.967Z" title="更新于 2023-11-13 16:09:28">2023-11-13</time></span></div><div class="content">3.3 HTTPS RSA 握手解析我前面讲，简单给大家介绍了的 HTTPS 握手过程，但是还不够细！
+只讲了比较基础的部分，所以这次我们再来深入一下 HTTPS，用实战抓包的方式，带大家再来窥探一次 HTTPS。
+
+对于还不知道对称加密和非对称加密的同学，你先复习我以前的这篇文章「硬核！30 张图解 HTTP 常见的面试题」，本篇文章默认大家已经具备了这些知识。
+
+TLS 握手过程HTTP 由于是明文传输，所谓的明文，就是说客户端与服务端通信的信息都是肉眼可见的，随意使用一个抓包工具都可以截获通信的内容。
+所以安全上存在以下三个风险：
+
+窃听风险，比如通信链路上可以获取通信内容，用户号容易没。
+篡改风险，比如强制植入垃圾广告，视觉污染，用户眼容易瞎。
+冒充风险，比如冒充淘宝网站，用户钱容易没。
+
+HTTPS 在 HTTP 与 TCP 层之间加入了 TLS 协议，来解决上述的风险。
+
+TLS 协议是如何解决 HTTP 的风险的呢？
+
+信息加密：HTTP 交互信息是被加密的，第三方就无法被窃取；
+校验机制：校验信息传输过程中是否有被第三方篡改过，如果被篡改过，则会有警告提示；
+身份证书： ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/0.html" title="无题"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="无题"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/0.html" title="无题">无题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T08:09:28.154Z" title="发表于 2023-11-13 16:09:28">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T08:09:28.966Z" title="更新于 2023-11-13 16:09:28">2023-11-13</time></span></div><div class="content">3.5 HTTPS 如何优化？由裸数据传输的 HTTP 协议转成加密数据传输的 HTTPS 协议，给应用数据套了个「保护伞」，提高安全性的同时也带来了性能消耗。
+因为 HTTPS 相比 HTTP 协议多一个 TLS 协议握手过程，目的是为了通过非对称加密握手协商或者交换出对称加密密钥，这个过程最长可以花费掉 2 RTT，接着后续传输的应用数据都得使用对称加密密钥来加密&#x2F;解密。
+为了数据的安全性，我们不得不使用 HTTPS 协议，至今大部分网址都已从 HTTP 迁移至 HTTPS 协议，因此针对 HTTPS 的优化是非常重要的。
+这次，就从多个角度来优化 HTTPS。
+
+
+分析性能损耗既然要对 HTTPS 优化，那得清楚哪些步骤会产生性能消耗，再对症下药。
+产生性能消耗的两个环节：
+
+第一个环节，TLS 协议握手过程；
+第二个环节，握手后的对称加密报文传输。
+
+对于第二环节，现在主流的对称加密算法 AES、ChaCha20 性能都是不错的，而且一些 CPU 厂商还针对它们做了硬件级别的优化，因此这个环节的性能消耗可以说非常地小。
+而第一个环节，TLS 协议握手过程不仅增加了网络 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/0.html" title="无题"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="无题"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/0.html" title="无题">无题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T08:09:28.152Z" title="发表于 2023-11-13 16:09:28">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T08:09:28.367Z" title="更新于 2023-11-13 16:09:28">2023-11-13</time></span></div><div class="content">3.4 HTTPS ECDHE 握手解析HTTPS 常用的密钥交换算法有两种，分别是 RSA 和 ECDHE 算法。
+其中，RSA 是比较传统的密钥交换算法，它不具备前向安全的性质，因此现在很少服务器使用的。而 ECDHE 算法具有前向安全，所以被广泛使用。
+我在上一篇已经介绍了 RSA 握手的过程，今天这一篇就「从理论再到实战抓包」介绍 ECDHE 算法。
+
+
+离散对数ECDHE 密钥协商算法是 DH 算法演进过来的，所以我们先从 DH 算法说起。
+DH 算法是非对称加密算法，因此它可以用于密钥交换，该算法的核心数学思想是离散对数。
+是不是听到这个数学概念就怂了？不怕，这次不会说离散对数推导的过程，只简单提一下它的数学公式。
+离散对数是「离散 + 对数」的两个数学概念的组合，所以我们先来复习一遍对数。
+要说起对数，必然要说指数，因为它们是互为反函数，指数就是幂运算，对数是指数的逆运算。
+举个栗子，如果以 2 作为底数，那么指数和对数运算公式，如下图所示：
+
+那么对于底数为 2 的时候，32 的对数是 5，64 的对数是 6，计算过程如下：
+
+对数运算的取值是可以连续的，而离散对数的取 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/d8c61fec.html" title="MySQL面试题"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="MySQL面试题"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/d8c61fec.html" title="MySQL面试题">MySQL面试题</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:13:53.000Z" title="发表于 2023-11-13 15:13:53">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-19T02:34:16.144Z" title="更新于 2023-11-19 10:34:16">2023-11-19</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><i class="fas fa-angle-right article-meta-link"></i><a class="article-meta__categories" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/">MySQL</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/MySQL/">MySQL</a></span></div><div class="content">基础什么是内连接、外连接、交叉连接、笛卡尔积呢？
+内连接（inner join）：取得两张表中满足存在连接匹配关系的记录。
+外连接（outer join）：不只取得两张表中满足存在连接匹配关系的记录，还包括某张表（或两张表）中不满足匹配关系的记录。
+交叉连接（cross join）：显示两张表所有记录一一对应，没有匹配关系进行筛选，它是笛卡尔积在 SQL 中的实现，如果 A 表有 m 行，B 表有 n 行，那么 A 和 B 交叉连接的结果就有 m*n 行。
+笛卡尔积：是数学中的一个概念，例如集合 A&#x3D;{a,b}，集合 B&#x3D;{0,1,2}，那么 A✖️B&#x3D;&#123;&lt;a,o&gt;,&lt;a,1&gt;,&lt;a,2&gt;,&lt;b,0&gt;,&lt;b,1&gt;,&lt;b,2&gt;,&#125;。
+
+MySQL的内连接、左连接、右连接有有什么区别？
+inner join内连接，在两张表进行连接查询时，只保留两张表中完全匹配的结果集
+left join在两张表进行连接查询时，会返回左表所有的行，即使在右表中没有匹配的记录。
+right ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/17715ea6.html" title="Java 值传递详解"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="Java 值传递详解"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/17715ea6.html" title="Java 值传递详解">Java 值传递详解</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:13:53.000Z" title="发表于 2023-11-13 15:13:53">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T01:36:43.368Z" title="更新于 2023-11-13 09:36:43">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Java/">Java</a><i class="fas fa-angle-right article-meta-link"></i><a class="article-meta__categories" href="/categories/Java/Java%E5%9F%BA%E7%A1%80/">Java基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/Java%E5%9F%BA%E7%A1%80/">Java基础</a></span></div><div class="content">形参&amp;实参方法的定义可能会用到 参数（有参的方法），参数在程序语言中分为：
+
+实参（实际参数，Arguments）：用于传递给函数&#x2F;方法的参数，必须有确定的值。
+形参（形式参数，Parameters）：用于定义函数&#x2F;方法，接收实参，不需要有确定的值。
+
+值传递&amp;引用传递程序设计语言将实参传递给方法（或函数）的方式分为两种：
+
+值传递：方法接收的是实参值的拷贝，会创建副本。
+引用传递：方法接收的直接是实参所引用的对象在堆中的地址，不会创建副本，对形参的修改将影响到实参。
+
+很多程序设计语言（比如 C++、 Pascal )提供了两种参数传递的方式，不过，在 Java 中只有值传递。
+为什么 Java 只有值传递？案例 1：传递基本类型参数代码：
+123456789101112131415public static void main(String[] args) &#123;    int num1 = 10;    int num2 = 20;    swap(num1, num2);    System.out.println(&quot;num1 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/68cae961.html" title="TCP 传输可靠性保障（传输层）"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="TCP 传输可靠性保障（传输层）"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/68cae961.html" title="TCP 传输可靠性保障（传输层）">TCP 传输可靠性保障（传输层）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.350Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.943Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">TCP 如何保证传输的可靠性？
+基于数据块传输：应用数据被分割成 TCP 认为最适合发送的数据块，再传输给网络层，数据块被称为报文段或段。
+对失序数据包重新排序以及去重：TCP 为了保证不发生丢包，就给每个包一个序列号，有了序列号能够将接收到的数据根据序列号排序，并且去掉重复序列号的数据就可以实现数据包去重。
+校验和 : TCP 将保持它首部和数据的检验和。这是一个端到端的检验和，目的是检测数据在传输过程中的任何变化。如果收到段的检验和有差错，TCP 将丢弃这个报文段和不确认收到此报文段。
+超时重传 : 当发送方发送数据之后，它启动一个定时器，等待目的端确认收到这个报文段。接收端实体对已成功收到的包发回一个相应的确认信息（ACK）。如果发送端实体在合理的往返时延（RTT）内未收到确认消息，那么对应的数据包就被假设为已丢失并进行重传。
+流量控制 : TCP 连接的每一方都有固定大小的缓冲空间，TCP 的接收端只允许发送端发送接收端缓冲区能接纳的数据。当接收方来不及处理发送方的数据，能提示发送方降低发送的速率，防止包丢失。TCP 使用的流量控制协议是可变大小的滑动窗口协议（TCP 利用滑动 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/2448ea40.html" title="TCP 三次握手和四次挥手（传输层）"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="TCP 三次握手和四次挥手（传输层）"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/2448ea40.html" title="TCP 三次握手和四次挥手（传输层）">TCP 三次握手和四次挥手（传输层）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.348Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.953Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">为了准确无误地把数据送达目标处，TCP 协议采用了三次握手策略。
+建立连接-TCP 三次握手
+建立一个 TCP 连接需要“三次握手”，缺一不可：
+
+一次握手:客户端发送带有 SYN（SEQ&#x3D;x） 标志的数据包 -&gt; 服务端，然后客户端进入 SYN_SEND 状态，等待服务器的确认；
+二次握手:服务端发送带有 SYN+ACK(SEQ&#x3D;y,ACK&#x3D;x+1) 标志的数据包 –&gt; 客户端,然后服务端进入 SYN_RECV 状态
+三次握手:客户端发送带有 ACK(ACK&#x3D;y+1) 标志的数据包 –&gt; 服务端，然后客户端和服务器端都进入ESTABLISHED 状态，完成 TCP 三次握手。
+
+当建立了 3 次握手之后，客户端和服务端就可以传输数据啦！
+为什么要三次握手?三次握手的目的是建立可靠的通信信道，说到通讯，简单来说就是数据的发送与接收，而三次握手最主要的目的就是双方确认自己与对方的发送与接收是正常的。
+
+第一次握手：Client 什么都不能确认；Server 确认了对方发送正常，自己接收正常
+第二次握手：Client 确认了：自己发 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/12b67755.html" title="计算机网络常见面试题总结(下)"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="计算机网络常见面试题总结(下)"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/12b67755.html" title="计算机网络常见面试题总结(下)">计算机网络常见面试题总结(下)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.347Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.952Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">下篇主要是传输层和网络层相关的内容。
+TCP 与 UDPTCP 与 UDP 的区别（重要）
+是否面向连接：UDP 在传送数据之前不需要先建立连接。而 TCP 提供面向连接的服务，在传送数据之前必须先建立连接，数据传送结束后要释放连接。
+是否是可靠传输：远地主机在收到 UDP 报文后，不需要给出任何确认，并且不保证数据不丢失，不保证是否顺序到达。TCP 提供可靠的传输服务，TCP 在传递数据之前，会有三次握手来建立连接，而且在数据传递时，有确认、窗口、重传、拥塞控制机制。通过 TCP 连接传输的数据，无差错、不丢失、不重复、并且按序到达。
+是否有状态：这个和上面的“是否可靠传输”相对应。TCP 传输是有状态的，这个有状态说的是 TCP 会去记录自己发送消息的状态比如消息是否发送了、是否被接收了等等。为此 ，TCP 需要维持复杂的连接状态表。而 UDP 是无状态服务，简单来说就是不管发出去之后的事情了（这很渣男！）。
+传输效率：由于使用 TCP 进行传输的时候多了连接、确认、重传等机制，所以 TCP 的传输效率要比 UDP 低很多。
+传输形式：TCP 是面向字节流的，UDP 是面向报文的。 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/bad4614.html" title="计算机网络常见面试题总结(上)"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="计算机网络常见面试题总结(上)"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/bad4614.html" title="计算机网络常见面试题总结(上)">计算机网络常见面试题总结(上)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.346Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.934Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">
+
+上篇主要是计算机网络基础和应用层相关的内容。
+计算机网络基础网络分层模型OSI 七层模型是什么？每一层的作用是什么？OSI 七层模型 是国际标准化组织提出一个网络分层模型，其大体结构以及每一层提供的功能如下图所示：
+
+每一层都专注做一件事情，并且每一层都需要使用下一层提供的功能比如传输层需要使用网络层提供的路由和寻址功能，这样传输层才知道把数据传输到哪里去。
+OSI 的七层体系结构概念清楚，理论也很完整，但是它比较复杂而且不实用，而且有些功能在多个层中重复出现。
+上面这种图可能比较抽象，再来一个比较生动的图片。下面这个图片是我在国外的一个网站上看到的，非常赞！
+
+TCP&#x2F;IP 四层模型是什么？每一层的作用是什么？TCP&#x2F;IP 四层模型 是目前被广泛采用的一种模型,我们可以将 TCP &#x2F; IP 模型看作是 OSI 七层模型的精简版本，由以下 4 层组成：
+
+应用层
+传输层
+网络层
+网络接口层
+
+需要注意的是，我们并不能将 TCP&#x2F;IP 四层模型 和 OSI 七层模型完全精确地匹配起来，不过可以简单将两者对应起来，如下图所示：
+
+关于每一层作用的 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/69cf07d3.html" title="OSI 和 TCP/IP 网络分层模型详解（基础）"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="OSI 和 TCP/IP 网络分层模型详解（基础）"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/69cf07d3.html" title="OSI 和 TCP/IP 网络分层模型详解（基础）">OSI 和 TCP/IP 网络分层模型详解（基础）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.345Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.940Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">OSI 七层模型OSI 七层模型 是国际标准化组织提出一个网络分层模型，其大体结构以及每一层提供的功能如下图所示：
+
+每一层都专注做一件事情，并且每一层都需要使用下一层提供的功能比如传输层需要使用网络层提供的路由和寻址功能，这样传输层才知道把数据传输到哪里去。
+OSI 的七层体系结构概念清楚，理论也很完整，但是它比较复杂而且不实用，而且有些功能在多个层中重复出现。
+上面这种图可能比较抽象，再来一个比较生动的图片。下面这个图片是我在国外的一个网站上看到的，非常赞！
+
+既然 OSI 七层模型这么厉害，为什么干不过 TCP&#x2F;IP 四 层模型呢？
+的确，OSI 七层模型当时一直被一些大公司甚至一些国家政府支持。这样的背景下，为什么会失败呢？我觉得主要有下面几方面原因：
+
+OSI 的专家缺乏实际经验，他们在完成 OSI 标准时缺乏商业驱动力
+OSI 的协议实现起来过分复杂，而且运行效率很低
+OSI 制定标准的周期太长，因而使得按 OSI 标准生产的设备无法及时进入市场（20 世纪 90 年代初期，虽然整套的 OSI 国际标准都已经制定出来，但基于 TCP&#x2F;IP 的互联网已经抢 ...</div></div></div><div class="recent-post-item"><div class="post_cover left"><a href="/posts/636e13fe.html" title="网络攻击常见手段总结"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="网络攻击常见手段总结"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/636e13fe.html" title="网络攻击常见手段总结">网络攻击常见手段总结</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.343Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.939Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">
+本文整理完善自TCP&#x2F;IP 常见攻击手段 - 暖蓝笔记 - 2021这篇文章。
+
+这篇文章的内容主要是介绍 TCP&#x2F;IP 常见攻击手段，尤其是 DDoS 攻击，也会补充一些其他的常见网络攻击手段。
+IP 欺骗IP 是什么?在网络中，所有的设备都会分配一个地址。这个地址就仿佛小蓝的家地址「多少号多少室」，这个号就是分配给整个子网的，「室」对应的号码即分配给子网中计算机的，这就是网络中的地址。「号」对应的号码为网络号，「室」对应的号码为主机号，这个地址的整体就是 IP 地址。
+通过 IP 地址我们能知道什么？通过 IP 地址，我们就可以知道判断访问对象服务器的位置，从而将消息发送到服务器。一般发送者发出的消息首先经过子网的集线器，转发到最近的路由器，然后根据路由位置访问下一个路由器的位置，直到终点
+IP 头部格式 :
+
+IP 欺骗技术是什么？骗呗，拐骗，诱骗！
+IP 欺骗技术就是伪造某台主机的 IP 地址的技术。通过 IP 地址的伪装使得某台主机能够伪装另外的一台主机，而这台主机往往具有某种特权或者被另外的主机所信任。
+假设现在有一个合法用户 (1.1.1.1) 已经 ...</div></div></div><div class="recent-post-item"><div class="post_cover right"><a href="/posts/7e5fc0f2.html" title="NAT 协议详解（网络层）"><img class="post-bg" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="NAT 协议详解（网络层）"></a></div><div class="recent-post-info"><a class="article-title" href="/posts/7e5fc0f2.html" title="NAT 协议详解（网络层）">NAT 协议详解（网络层）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-13T07:05:37.342Z" title="发表于 2023-11-13 15:05:37">2023-11-13</time><span class="article-meta-separator">|</span><i class="fas fa-history"></i><span class="article-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-13T07:05:37.932Z" title="更新于 2023-11-13 15:05:37">2023-11-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/">计算机基础</a></span><span class="article-meta tags"><span class="article-meta-separator">|</span><i class="fas fa-tag"></i><a class="article-meta__tags" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a></span></div><div class="content">应用场景NAT 协议（Network Address Translation） 的应用场景如同它的名称——网络地址转换，应用于内部网到外部网的地址转换过程中。具体地说，在一个小的子网（局域网，Local Area Network，LAN）内，各主机使用的是同一个 LAN 下的 IP 地址，但在该 LAN 以外，在广域网（Wide Area Network，WAN）中，需要一个统一的 IP 地址来标识该 LAN 在整个 Internet 上的位置。
+这个场景其实不难理解。随着一个个小型办公室、家庭办公室（Small Office, Home Office, SOHO）的出现，为了管理这些 SOHO，一个个子网被设计出来，从而在整个 Internet 中的主机数量将非常庞大。如果每个主机都有一个“绝对唯一”的 IP 地址，那么 IPv4 地址的表达能力可能很快达到上限（$2^{32}$）。因此，实际上，SOHO 子网中的 IP 地址是“相对的”，这在一定程度上也缓解了 IPv4 地址的分配压力。
+SOHO 子网的“代理人”，也就是和外界的窗口，通常由路由器扮演。路由器的 LAN 一侧管理着 ...</div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/2/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#content-inner">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#content-inner">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/#content-inner">11</a><a class="extend next" rel="next" href="/page/4/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/assets/tx.jpg" onerror="this.onerror=null;this.src='/assets/r1.jpg'" alt="avatar"/></div><div class="author-info__name">墨凌</div><div class="author-info__description">平常心</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/mo0ling"><i class="fab fa-github"></i><span>跟随我</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/mo0ling" target="_blank" title="Github"><i class="fa-brands fa-github" style="color: #hdhfbb;"></i></a><a class="social-icon" href="mailto:mo8ling@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #000000;"></i></a><a class="social-icon" href="https://user.qzone.qq.com/761336738/infocenter" target="_blank" title="QQ"><i class="fa-brands fa-qq" style="color: #hdhfbb;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">这是我的博客</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/e71a29d0.html" title="Redis常见面试题总结(下)"><img src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="Redis常见面试题总结(下)"/></a><div class="content"><a class="title" href="/posts/e71a29d0.html" title="Redis常见面试题总结(下)">Redis常见面试题总结(下)</a><time datetime="2023-11-15T02:37:31.452Z" title="发表于 2023-11-15 10:37:31">2023-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/aa973f31.html" title="Redis内存碎片详解"><img src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="Redis内存碎片详解"/></a><div class="content"><a class="title" href="/posts/aa973f31.html" title="Redis内存碎片详解">Redis内存碎片详解</a><time datetime="2023-11-15T02:37:31.425Z" title="发表于 2023-11-15 10:37:31">2023-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c69c4d4.html" title="Redis 3 种特殊数据类型详解"><img src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="Redis 3 种特殊数据类型详解"/></a><div class="content"><a class="title" href="/posts/c69c4d4.html" title="Redis 3 种特殊数据类型详解">Redis 3 种特殊数据类型详解</a><time datetime="2023-11-15T02:37:31.423Z" title="发表于 2023-11-15 10:37:31">2023-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/7c795505.html" title="Redis常见阻塞原因总结"><img src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="Redis常见阻塞原因总结"/></a><div class="content"><a class="title" href="/posts/7c795505.html" title="Redis常见阻塞原因总结">Redis常见阻塞原因总结</a><time datetime="2023-11-15T02:37:31.420Z" title="发表于 2023-11-15 10:37:31">2023-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/34bee965.html" title="MySQL日期类型选择建议"><img src="https://source.fomal.cc/img/default_cover_14.webp" onerror="this.onerror=null;this.src='/assets/r2.jpg'" alt="MySQL日期类型选择建议"/></a><div class="content"><a class="title" href="/posts/34bee965.html" title="MySQL日期类型选择建议">MySQL日期类型选择建议</a><time datetime="2023-11-15T02:37:31.247Z" title="发表于 2023-11-15 10:37:31">2023-11-15</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+    <i class="fas fa-angle-right"></i></a>
+            </div>
+            <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/"><span class="card-category-list-name">Java</span><span class="card-category-list-count">62</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java基础</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java/Java%E5%B9%B6%E5%8F%91/"><span class="card-category-list-name">Java并发</span><span class="card-category-list-count">1</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Java-%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">Java 基础</span><span class="card-category-list-count">2</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"><span class="card-category-list-name">数据库</span><span class="card-category-list-count">26</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/MySQL/"><span class="card-category-list-name">MySQL</span><span class="card-category-list-count">4</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/Redis/"><span class="card-category-list-name">Redis</span><span class="card-category-list-count">8</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"><span class="card-category-list-name">计算机基础</span><span class="card-category-list-count">13</span></a></li>
+            </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/Java%E5%9F%BA%E7%A1%80/" style="font-size: 1.27em; color: #99a0a9">Java基础</a> <a href="/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/" style="font-size: 1.1em; color: #999">性能优化</a> <a href="/tags/Java%E5%BC%82%E5%B8%B8-%E6%B3%9B%E5%9E%8B-%E5%8F%8D%E5%B0%84-IO-%E6%B3%A8%E8%A7%A3/" style="font-size: 1.1em; color: #999">Java异常,泛型,反射,IO,注解</a> <a href="/tags/MySQL%E7%B4%A2%E5%BC%95/" style="font-size: 1.1em; color: #999">MySQL索引</a> <a href="/tags/HTTP-2/" style="font-size: 1.1em; color: #999">HTTP/2</a> <a href="/tags/%E4%BA%8B%E5%8A%A1/" style="font-size: 1.1em; color: #999">事务</a> <a href="/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1-%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95-%E6%8E%A5%E5%8F%A3-%E6%8A%BD%E8%B1%A1%E7%B1%BB-String-Object/" style="font-size: 1.1em; color: #999">面向对象,构造方法,接口,抽象类,String,Object</a> <a href="/tags/HTTPS/" style="font-size: 1.1em; color: #999">HTTPS</a> <a href="/tags/%E5%93%A8%E5%85%B5/" style="font-size: 1.1em; color: #999">哨兵</a> <a href="/tags/Redis%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%EF%BC%8CRedis%E5%B8%B8%E8%A7%81%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" style="font-size: 1.1em; color: #999">Redis常见数据类型，Redis常见数据结构</a> <a href="/tags/Java%E5%B9%B6%E5%8F%91/" style="font-size: 1.5em; color: #99a9bf">Java并发</a> <a href="/tags/JVM-JDK-JRE-%E5%AD%97%E8%8A%82%E7%A0%81%E8%AF%A6%E8%A7%A3-Java-%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B-%E8%A3%85%E7%AE%B1%E5%92%8C%E6%8B%86%E7%AE%B1/" style="font-size: 1.1em; color: #999">JVM,JDK,JRE,字节码详解,Java 基本数据类型,装箱和拆箱</a> <a href="/tags/MySQL/" style="font-size: 1.33em; color: #99a2af">MySQL</a> <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" style="font-size: 1.44em; color: #99a7ba">计算机网络</a> <a href="/tags/Redis/" style="font-size: 1.21em; color: #999ea4">Redis</a> <a href="/tags/HTTP-1-0-HTTP-1-1/" style="font-size: 1.1em; color: #999">HTTP/1.0,HTTP/1.1</a> <a href="/tags/%E5%A4%A7%E5%8E%82%E9%9D%A2%E8%AF%95/" style="font-size: 1.16em; color: #999b9e">大厂面试</a> <a href="/tags/Java%E6%96%B0%E7%89%B9%E6%80%A7/" style="font-size: 1.39em; color: #99a4b4">Java新特性</a> <a href="/tags/Java%E9%9B%86%E5%90%88/" style="font-size: 1.39em; color: #99a4b4">Java集合</a> <a href="/tags/binlog%EF%BC%8Credo-log%EF%BC%8Cundo-log/" style="font-size: 1.1em; color: #999">binlog，redo log，undo log</a></div></div><div class="card-widget card-archives"><div class="item-headline"><i class="fas fa-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/11/"><span class="card-archive-list-date">十一月 2023</span><span class="card-archive-list-count">129</span></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2023/10/"><span class="card-archive-list-date">十月 2023</span><span class="card-archive-list-count">2</span></a></li></ul></div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站资讯</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">131</div></div><div class="webinfo-item"><div class="item-name">本站总字数 :</div><div class="item-count">644k</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总访问量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2023-11-29T01:32:59.880Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div><div class="card-widget user-map" id="user-map"><div class="item-headline"><i class="fas fa-heartbeat"></i><span>访客地图</span></div><div class="item-content"><script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=5V2tOKp8qAdRM-i8eu7ETTO9ugt5uKbbG-U7Yj8uMl8"></script></div></div></div></div></main><footer id="footer" style="background-image: url('/assets/bj.png')"><div id="footer-wrap"><div class="copyright">&copy;2023  <i id="heartbeat" class="fa fas fa-heartbeat"></i> 墨凌</div><div class="footer_custom_text">你好, 欢迎来到我的博客!</div></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="translateLink" type="button" title="简繁转换">繁</button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-home"><i class="fa-solid fa-house"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/archives/"><i class="fa-solid fa-archive"></i><span>文章归档</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="fa-solid fa-folder-open"></i><span>文章分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="fa-solid fa-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuNormal"><a class="rightMenu-item menu-link" id="menu-radompage" href="/random/index.html"><i class="fa-solid fa-shoe-prints"></i><span>随便逛逛</span></a><div class="rightMenu-item" id="menu-translate"><i class="fa-solid fa-earth-asia"></i><span>繁简切换</span></div><div class="rightMenu-item" id="menu-darkmode"><i class="fa-solid fa-moon"></i><span>切换模式</span></div></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="https://cdn.staticfile.org/algoliasearch/4.14.3/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.staticfile.org/instantsearch.js/4.49.2/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"><script>window.typedJSFn = {
+  init: (str) => {
+    window.typed = new Typed('#subtitle', Object.assign({
+      strings: str,
+      startDelay: 300,
+      typeSpeed: 150,
+      loop: true,
+      backSpeed: 50,
+    }, null))
+  },
+  run: (subtitleType) => {
+    if (true) {
+      if (typeof Typed === 'function') {
+        subtitleType()
+      } else {
+        getScript('https://lf9-cdn-tos.bytecdntp.com/cdn/expire-1-M/typed.js/2.0.12/typed.min.js').then(subtitleType)
+      }
+    } else {
+      subtitleType()
+    }
+  }
+}
+</script><script>function subtitleType () {
+  fetch('https://v1.hitokoto.cn')
+    .then(response => response.json())
+    .then(data => {
+      if (true) {
+        const from = '出自 ' + data.from
+        const sub = []
+        sub.unshift(data.hitokoto, from)
+        typedJSFn.init(sub)
+      } else {
+        document.getElementById('subtitle').textContent = data.hitokoto
+      }
+    })
+}
+typedJSFn.run(subtitleType)
+</script></div><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><div class="aplayer no-destroy" data-id="7427714271" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-lrctype="1" data-preload="none" data-autoplay="true" muted></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><script defer data-pjax src="/js/rightMenu.js"></script><script async src="/js/diytitle.js"></script><script async src="/js/grayscale.js"></script><script async src="/js/cursor.js"></script><script async src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/canvas-nest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '68cca326e7b348b69328ea977b6186fe# 你的key';
+  var gaud_map_key = 'ba1713bd268fa5e98ff6fa04501dc306# 你的key';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 280px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://github-calendar-api-amber.vercel.app/api?mo0ling",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'mo0ling')
+    }
+  </script><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --></body></html>

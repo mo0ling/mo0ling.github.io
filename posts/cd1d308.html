@@ -1,0 +1,404 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>墨凌的博客 | 墨凌的博客</title><meta name="author" content="墨凌"><meta name="copyright" content="墨凌"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="title: 类加载机制icon: fileorder: 2author: Ms.Cheneydate: 2023-10-19PageView: truelastUpdated: truecategory:    - JVMcopyright: falsefooter: 赣ICP备2023007682 | 使用 VuePress Theme Hope 主题 | MIT 协议, 版权所有 © 20">
+<meta property="og:type" content="article">
+<meta property="og:title" content="墨凌的博客">
+<meta property="og:url" content="https://mo0ling.github.io/posts/cd1d308.html">
+<meta property="og:site_name" content="墨凌的博客">
+<meta property="og:description" content="title: 类加载机制icon: fileorder: 2author: Ms.Cheneydate: 2023-10-19PageView: truelastUpdated: truecategory:    - JVMcopyright: falsefooter: 赣ICP备2023007682 | 使用 VuePress Theme Hope 主题 | MIT 协议, 版权所有 © 20">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://source.fomal.cc/img/default_cover_14.webp">
+<meta property="article:published_time" content="2023-11-12T08:50:54.585Z">
+<meta property="article:modified_time" content="2023-11-12T01:38:49.265Z">
+<meta property="article:author" content="墨凌">
+<meta property="article:tag" content="Java,MySQL,算法,代码,博客,Butterfly,Hexo">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://source.fomal.cc/img/default_cover_14.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://mo0ling.github.io/posts/cd1d308.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"OJQXVBAQG1","apiKey":"5eaa2e0c3fca2242ca816a7a80f71636","indexName":"hexoblog","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"已经过期","messageNext":"天, 这篇文章需要淘汰。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"var(--theme-color)","bgDark":"#191919","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.10.1/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '墨凌的博客',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-12 09:38:49'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/fonts/font.css"><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (true) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/assets/tx.jpg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="墨凌的博客"><span class="site-name">墨凌的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">无题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-12T08:50:54.585Z" title="发表于 2023-11-12 16:50:54">2023-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-12T01:38:49.265Z" title="更新于 2023-11-12 09:38:49">2023-11-12</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.2k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><hr>
+<h2 id="title-类加载机制icon-fileorder-2author-Ms-Cheneydate-2023-10-19PageView-truelastUpdated-truecategory-JVMcopyright-falsefooter-赣ICP备2023007682-使用-VuePress-Theme-Hope-主题-MIT-协议-版权所有-©-2023-Cheney-2018-present-Mr-Hope-版权声明：本文为JavaPass博主「javapass-cn」的原创文章，遵循CC-4-0-BY-SA版权协议，转载请附上原文出处链接及本声明。"><a href="#title-类加载机制icon-fileorder-2author-Ms-Cheneydate-2023-10-19PageView-truelastUpdated-truecategory-JVMcopyright-falsefooter-赣ICP备2023007682-使用-VuePress-Theme-Hope-主题-MIT-协议-版权所有-©-2023-Cheney-2018-present-Mr-Hope-版权声明：本文为JavaPass博主「javapass-cn」的原创文章，遵循CC-4-0-BY-SA版权协议，转载请附上原文出处链接及本声明。" class="headerlink" title="title: 类加载机制icon: fileorder: 2author: Ms.Cheneydate: 2023-10-19PageView: truelastUpdated: truecategory:    - JVMcopyright: falsefooter: 赣ICP备2023007682 | 使用 VuePress Theme Hope 主题 | MIT 协议, 版权所有 © 2023-Cheney,2018-present Mr.Hope# 版权声明：本文为JavaPass博主「javapass.cn」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。"></a>title: 类加载机制<br>icon: file<br>order: 2<br>author: Ms.Cheney<br>date: 2023-10-19<br>PageView: true<br>lastUpdated: true<br>category:<br>    - JVM<br>copyright: false<br>footer: 赣ICP备2023007682 | 使用 <a href="https://theme-hope.vuejs.press/zh/" target="_blank">VuePress Theme Hope</a> 主题 | MIT 协议, 版权所有 © 2023-Cheney,2018-present Mr.Hope<br># 版权声明：本文为JavaPass博主「javapass.cn」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。</h2><h3 id="1-类加载的详细过程了解吗？-star-star-five"><a href="#1-类加载的详细过程了解吗？-star-star-five" class="headerlink" title="1. 类加载的详细过程了解吗？:star::star::five:"></a>1. 类加载的详细过程了解吗？:star::star::five:</h3><ul>
+<li>加载：每个类都有加载它的<code>ClassLoader</code>，将<code>class</code>文件加载到内存中，将静态数据结构加载到运行时常量池中，在堆中生成代表这个类的<code>class</code>对象。</li>
+<li>连接：包括验证、准备、解析三步骤；<br>   <code>1</code>. 验证：验证<code>class</code>文件的规范性，保证虚拟机自身安全；<br>   <code>2</code>. 准备：为<code>static</code>类变量在方法区中分配内存并设置初始值。<br>   <code>3</code>.  解析：将方法区中常量池中的符号引用替换为直接引用。</li>
+<li>初始化：执行类中定义执行类构造器方法的过程 ，创建实例对象时进行。</li>
+<li>使用：调用对象的方法或者类的静态方法；</li>
+<li>卸载：<code>Class</code>对象被<code>GC</code>，在没有任何地方被引用、类加载器被<code>GC</code>、没有任何对象时卸载。</li>
+</ul>
+<p><strong>题评：</strong> 没有意义的题目，只能硬背了！<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="2-类加载器原理懂吗？-star-star-star-four"><a href="#2-类加载器原理懂吗？-star-star-star-four" class="headerlink" title="2. 类加载器原理懂吗？:star::star::star::four:"></a>2. 类加载器原理懂吗？:star::star::star::four:</h3><p>类加载器的主要作用是将<code>class</code>字节码文件加载到<code>JVM</code>中，类加载器并不会一次性加载所有的类，而是根据需要去动态加载。<code>JVM</code>内置了三大类加载器：启动类加载器：最顶层的加载器加载<code>java</code>的核心类库（<code>jre</code>核心类库）、扩展类加载器：加载<code>java</code>的扩展库<code>ext</code>下的<code>jar</code>包、程序类加载器：负责加载当前应用路径下的所有<code>jar</code>包和类；最后加载类通过双亲委派机制加载的。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="3-双亲委派机制知道吗？-star-star-star-four"><a href="#3-双亲委派机制知道吗？-star-star-star-four" class="headerlink" title="3. 双亲委派机制知道吗？:star::star::star::four:"></a>3. 双亲委派机制知道吗？:star::star::star::four:</h3><p>双亲委派模型要求除了顶层的启动类加载器外，其余的类加载器都应有自己的父类加载器。即加载任意一个类都要 加载器唯一、这个类唯一。而加载器根据类的全限定类名来加载到<code>JVM</code>内存中再转为类对象。在类加载的时候，首先不会自己去加载类而是把这个加载请求委派给父类去加载，如果父类加载了直接返回，如果没加载则也递归向上级父类委派；只有当父类加载器没找到所需的类也就是加载不了，子类才尝试自己加载；总结：自底向上委派加载，自顶向下尝试加载；如果都没找到该类则抛出<code>ClassNotFound</code>异常；保证了任意一个类只能被加载一次，且加载器是唯一的。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="4-为什么需要双亲委派模型？-star-star-star-four"><a href="#4-为什么需要双亲委派模型？-star-star-star-four" class="headerlink" title="4. 为什么需要双亲委派模型？:star::star::star::four:"></a>4. 为什么需要双亲委派模型？:star::star::star::four:</h3><p>果没有双亲委派，那么用户是不是可以自己定义一个<code>java</code>.<code>lang</code>.<code>Object</code>的同名类，<code>java</code>.<code>lang</code>.<code>String</code>的同名类，并把它放到<code>ClassPath</code>中,那么类之间的比较结果及类的唯一性将无法保证，因此，为什么需要双亲委派模型？防止内存中出现多份同样的字节码。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="5-怎么打破双亲委派模型？-star-star-star-star-four"><a href="#5-怎么打破双亲委派模型？-star-star-star-star-four" class="headerlink" title="5. 怎么打破双亲委派模型？:star::star::star::star::four:"></a>5. 怎么打破双亲委派模型？:star::star::star::star::four:</h3><p>打破双亲委派机制则不仅要继承<code>ClassLoader</code>类，还要重写<code>loadClass</code>和<code>findClass</code>方法。  即原来的<code>loadClass</code>默认向父类加载，这里可以调用<code>findClass</code>自己加载。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="6-Java类的初始化知道吗？-star-star-star-star-three"><a href="#6-Java类的初始化知道吗？-star-star-star-star-three" class="headerlink" title="6. Java类的初始化知道吗？:star::star::star::star::three:"></a>6. <code>Java</code>类的初始化知道吗？:star::star::star::star::three:</h3><p>类的初始化也是延迟的，直到类第一次被主动使用，<code>JVM</code> 才会初始化类。  初始化过程的主要操作是执行静态代码块和初始化静态域<code>(</code>静态变量，常量池加载到运行时常量池<code>)</code>。在一个类被初始化之前，它的直接父类也需要被初始化。  </p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="7-加载到内存中的-class-数量太多或者体积太大怎么办？-star-star-star-four"><a href="#7-加载到内存中的-class-数量太多或者体积太大怎么办？-star-star-star-four" class="headerlink" title="7. 加载到内存中的 class 数量太多或者体积太大怎么办？:star::star::star::four:"></a>7. 加载到内存中的 <code>class</code> 数量太多或者体积太大怎么办？:star::star::star::four:</h3><p>增加 <code>Metaspace</code> 的大小  ： -<code>XX</code>:<code>MaxMetaspaceSize</code>&#x3D;<code>512m</code> </p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="8-JVM-组成结构清楚吗？-star-star-star-star-four"><a href="#8-JVM-组成结构清楚吗？-star-star-star-star-four" class="headerlink" title="8. JVM 组成结构清楚吗？:star::star::star::star::four:"></a>8. <code>JVM</code> 组成结构清楚吗？:star::star::star::star::four:</h3><p>包括两个子系统和两个组件：类加载和执行引擎、运行时内存结构和本地接口；</p>
+<ul>
+<li>类加载：根据给定的类全限定名加载<code>class</code>文件到方法区中，然后在堆上创建一个 <code>java</code>.<code>lang</code>.<code>Class</code>对象</li>
+<li>执行引擎：执行<code>class</code>中的指令；</li>
+<li>本地接口：调用<code>native</code> 方法也就是底层封装的方法的接口；</li>
+<li>运行时内存结构：常说的<code>JVM</code>内存结构；<br>整个过程就是，.<code>java</code>文件首先被编译成.<code>class</code>文件，然后被类加载器加载到方法区中。.<code>class</code>文件并不能直接被底层操作系统执行，所以需要解释器进行解释成机器指令，再交给操作系统<code>CPU</code>去执行。其中有些底层实现调用了<code>native</code>本地方法，<code>C</code>语言实现的。</li>
+</ul>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="9-字符串常量池知道吗？-star-star-star-four"><a href="#9-字符串常量池知道吗？-star-star-star-four" class="headerlink" title="9. 字符串常量池知道吗？:star::star::star::four:"></a>9. 字符串常量池知道吗？:star::star::star::four:</h3><p>字符串常量池原来放在方法区，由于不好垃圾回收于是后来<code>jdk8</code>是存放在堆上的，字符串常量池存储的是<code>string</code>对象的直接引用，而不是直接存放的对象，是一张<code>string</code> <code>table</code>。<code>String</code> 对象还是放在堆内存上，只是调用<code>intern</code>方法之后，会在<code>string</code> <code>table</code>中指定其引用。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="10-常量池与运行时常量池的区别是什么？-star-star-star-four"><a href="#10-常量池与运行时常量池的区别是什么？-star-star-star-four" class="headerlink" title="10. 常量池与运行时常量池的区别是什么？:star::star::star::four:"></a>10. 常量池与运行时常量池的区别是什么？:star::star::star::four:</h3><p>常量池和运行时常量池都是<code>Class</code>的一部分，都在方法区，随着类加载而加载；常量池用于存放编译期生成的各种字面量与符号引用。加载完后就放在运行时常量池中。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="11-堆外内存与堆内存有什么不同？-star-star-four"><a href="#11-堆外内存与堆内存有什么不同？-star-star-four" class="headerlink" title="11. 堆外内存与堆内存有什么不同？:star::star::four:"></a>11. 堆外内存与堆内存有什么不同？:star::star::four:</h3><p>堆外内存, 常常又叫做直接内存。  把内存对象分配在<code>Java</code>虚拟机的堆以外的内存，  直接受操作系统管理（而不是虚拟机），能够在一定程度上减少垃圾回收对应用程序造成的影响。  我们经常用<code>java</code>.<code>nio</code>.<code>DirectByteBuffer</code>对象进行堆外内存的管理和使用，它会在对象创建的时候就分配堆外内存。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="12-为什么用元空间替代永久代？-star-star-star-star-three"><a href="#12-为什么用元空间替代永久代？-star-star-star-star-three" class="headerlink" title="12. 为什么用元空间替代永久代？:star::star::star::star::three:"></a>12. 为什么用元空间替代永久代？:star::star::star::star::three:</h3><ul>
+<li>永久代的空间难以确定，永久代占用的是<code>JVM</code>内存，难以调优。</li>
+<li>元空间占用的是本地内存，无需进行调优。</li>
+</ul>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="13-为什么字符串常量池放在堆中？-star-star-star-star-four"><a href="#13-为什么字符串常量池放在堆中？-star-star-star-star-four" class="headerlink" title="13. 为什么字符串常量池放在堆中？:star::star::star::star::four:"></a>13. 为什么字符串常量池放在堆中？:star::star::star::star::four:</h3><p> 因为永久代中需要进行<code>Full</code> <code>GC</code>才能垃圾回收，导致字符串常量池回收效率不高，提高回收效率。</p>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="14-使用堆外内存的优点？-star-star-star-three"><a href="#14-使用堆外内存的优点？-star-star-star-three" class="headerlink" title="14. 使用堆外内存的优点？:star::star::star::three:"></a>14. 使用堆外内存的优点？:star::star::star::three:</h3><ul>
+<li>减少了垃圾回收  </li>
+<li>加快了复制的速度</li>
+</ul>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+<h3 id="15-对象创建的流程？-star-star-star-star-three"><a href="#15-对象创建的流程？-star-star-star-star-three" class="headerlink" title="15. 对象创建的流程？:star::star::star::star::three:"></a>15. 对象创建的流程？:star::star::star::star::three:</h3><ul>
+<li>判断类是否加载，没有加载则先加载类</li>
+<li>类加载后，接下来分配内存。判断堆内存是否规整（连续）和垃圾回收算法有关，分为指针碰撞（规整的内存分配算法：指针左边的是已经分配的内存，右边是未分配内存）和空闲列表（零碎内存分配算法：维护一个内存记录表，记录已分配的内存地址，从未分配的内存中找一块足够大的内存分配）。</li>
+<li>并发<code>CAS</code>分配内存，因为高并发创建对象时，可能多个进程判断某个内存是空闲的，于是都去占用创建对象。</li>
+<li>将分配到的内存都初始化为<code>0</code>值，并将引用指向新的对象空间。</li>
+</ul>
+<p><strong>题评：</strong> 无<br>::: details 点击查看详细答案<br>待补充<br>:::</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io">墨凌</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io/posts/cd1d308.html">https://mo0ling.github.io/posts/cd1d308.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mo0ling.github.io" target="_blank">墨凌的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"></div><div class="post_share"><div class="social-share" data-image="https://source.fomal.cc/img/default_cover_14.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/72f47432.html" title=""><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info"></div></div></a></div><div class="next-post pull-right"><a href="/posts/a1ede006.html" title="HTTP"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HTTP</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#title-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6icon-fileorder-2author-Ms-Cheneydate-2023-10-19PageView-truelastUpdated-truecategory-JVMcopyright-falsefooter-%E8%B5%A3ICP%E5%A4%872023007682-%E4%BD%BF%E7%94%A8-VuePress-Theme-Hope-%E4%B8%BB%E9%A2%98-MIT-%E5%8D%8F%E8%AE%AE-%E7%89%88%E6%9D%83%E6%89%80%E6%9C%89-%C2%A9-2023-Cheney-2018-present-Mr-Hope-%E7%89%88%E6%9D%83%E5%A3%B0%E6%98%8E%EF%BC%9A%E6%9C%AC%E6%96%87%E4%B8%BAJavaPass%E5%8D%9A%E4%B8%BB%E3%80%8Cjavapass-cn%E3%80%8D%E7%9A%84%E5%8E%9F%E5%88%9B%E6%96%87%E7%AB%A0%EF%BC%8C%E9%81%B5%E5%BE%AACC-4-0-BY-SA%E7%89%88%E6%9D%83%E5%8D%8F%E8%AE%AE%EF%BC%8C%E8%BD%AC%E8%BD%BD%E8%AF%B7%E9%99%84%E4%B8%8A%E5%8E%9F%E6%96%87%E5%87%BA%E5%A4%84%E9%93%BE%E6%8E%A5%E5%8F%8A%E6%9C%AC%E5%A3%B0%E6%98%8E%E3%80%82"><span class="toc-number">1.</span> <span class="toc-text">title: 类加载机制icon: fileorder: 2author: Ms.Cheneydate: 2023-10-19PageView: truelastUpdated: truecategory:    - JVMcopyright: falsefooter: 赣ICP备2023007682 | 使用 VuePress Theme Hope 主题 | MIT 协议, 版权所有 © 2023-Cheney,2018-present Mr.Hope# 版权声明：本文为JavaPass博主「javapass.cn」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E7%9A%84%E8%AF%A6%E7%BB%86%E8%BF%87%E7%A8%8B%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F-star-star-five"><span class="toc-number">1.1.</span> <span class="toc-text">1. 类加载的详细过程了解吗？:star::star::five:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E5%8E%9F%E7%90%86%E6%87%82%E5%90%97%EF%BC%9F-star-star-star-four"><span class="toc-number">1.2.</span> <span class="toc-text">2. 类加载器原理懂吗？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6%E7%9F%A5%E9%81%93%E5%90%97%EF%BC%9F-star-star-star-four"><span class="toc-number">1.3.</span> <span class="toc-text">3. 双亲委派机制知道吗？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%EF%BC%9F-star-star-star-four"><span class="toc-number">1.4.</span> <span class="toc-text">4. 为什么需要双亲委派模型？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E6%80%8E%E4%B9%88%E6%89%93%E7%A0%B4%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%A8%A1%E5%9E%8B%EF%BC%9F-star-star-star-star-four"><span class="toc-number">1.5.</span> <span class="toc-text">5. 怎么打破双亲委派模型？:star::star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Java%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E7%9F%A5%E9%81%93%E5%90%97%EF%BC%9F-star-star-star-star-three"><span class="toc-number">1.6.</span> <span class="toc-text">6. Java类的初始化知道吗？:star::star::star::star::three:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-%E5%8A%A0%E8%BD%BD%E5%88%B0%E5%86%85%E5%AD%98%E4%B8%AD%E7%9A%84-class-%E6%95%B0%E9%87%8F%E5%A4%AA%E5%A4%9A%E6%88%96%E8%80%85%E4%BD%93%E7%A7%AF%E5%A4%AA%E5%A4%A7%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F-star-star-star-four"><span class="toc-number">1.7.</span> <span class="toc-text">7. 加载到内存中的 class 数量太多或者体积太大怎么办？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-JVM-%E7%BB%84%E6%88%90%E7%BB%93%E6%9E%84%E6%B8%85%E6%A5%9A%E5%90%97%EF%BC%9F-star-star-star-star-four"><span class="toc-number">1.8.</span> <span class="toc-text">8. JVM 组成结构清楚吗？:star::star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0%E7%9F%A5%E9%81%93%E5%90%97%EF%BC%9F-star-star-star-four"><span class="toc-number">1.9.</span> <span class="toc-text">9. 字符串常量池知道吗？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#10-%E5%B8%B8%E9%87%8F%E6%B1%A0%E4%B8%8E%E8%BF%90%E8%A1%8C%E6%97%B6%E5%B8%B8%E9%87%8F%E6%B1%A0%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F-star-star-star-four"><span class="toc-number">1.10.</span> <span class="toc-text">10. 常量池与运行时常量池的区别是什么？:star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#11-%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%E4%B8%8E%E5%A0%86%E5%86%85%E5%AD%98%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8D%E5%90%8C%EF%BC%9F-star-star-four"><span class="toc-number">1.11.</span> <span class="toc-text">11. 堆外内存与堆内存有什么不同？:star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#12-%E4%B8%BA%E4%BB%80%E4%B9%88%E7%94%A8%E5%85%83%E7%A9%BA%E9%97%B4%E6%9B%BF%E4%BB%A3%E6%B0%B8%E4%B9%85%E4%BB%A3%EF%BC%9F-star-star-star-star-three"><span class="toc-number">1.12.</span> <span class="toc-text">12. 为什么用元空间替代永久代？:star::star::star::star::three:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#13-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0%E6%94%BE%E5%9C%A8%E5%A0%86%E4%B8%AD%EF%BC%9F-star-star-star-star-four"><span class="toc-number">1.13.</span> <span class="toc-text">13. 为什么字符串常量池放在堆中？:star::star::star::star::four:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-%E4%BD%BF%E7%94%A8%E5%A0%86%E5%A4%96%E5%86%85%E5%AD%98%E7%9A%84%E4%BC%98%E7%82%B9%EF%BC%9F-star-star-star-three"><span class="toc-number">1.14.</span> <span class="toc-text">14. 使用堆外内存的优点？:star::star::star::three:</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA%E7%9A%84%E6%B5%81%E7%A8%8B%EF%BC%9F-star-star-star-star-three"><span class="toc-number">1.15.</span> <span class="toc-text">15. 对象创建的流程？:star::star::star::star::three:</span></a></li></ol></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><div id="footer-wrap"><div class="copyright">&copy;2023  <i id="heartbeat" class="fa fas fa-heartbeat"></i> 墨凌</div><div class="footer_custom_text">你好, 欢迎来到我的博客!</div></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-home"><i class="fa-solid fa-house"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/archives/"><i class="fa-solid fa-archive"></i><span>文章归档</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="fa-solid fa-folder-open"></i><span>文章分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="fa-solid fa-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuNormal"><a class="rightMenu-item menu-link" id="menu-radompage" href="/random/index.html"><i class="fa-solid fa-shoe-prints"></i><span>随便逛逛</span></a><div class="rightMenu-item" id="menu-translate"><i class="fa-solid fa-earth-asia"></i><span>繁简切换</span></div><div class="rightMenu-item" id="menu-darkmode"><i class="fa-solid fa-moon"></i><span>切换模式</span></div></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="https://cdn.staticfile.org/algoliasearch/4.14.3/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.staticfile.org/instantsearch.js/4.49.2/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><div class="aplayer no-destroy" data-id="7427714271" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-lrctype="1" data-preload="none" data-autoplay="true" muted></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><script defer data-pjax src="/js/rightMenu.js"></script><script async src="/js/diytitle.js"></script><script async src="/js/grayscale.js"></script><script async src="/js/cursor.js"></script><script async src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/canvas-nest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '68cca326e7b348b69328ea977b6186fe# 你的key';
+  var gaud_map_key = 'ba1713bd268fa5e98ff6fa04501dc306# 你的key';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 280px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://github-calendar-api-amber.vercel.app/api?mo0ling",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'mo0ling')
+    }
+  </script><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --></body></html>

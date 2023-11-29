@@ -1,0 +1,481 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>HTTP/2 | 墨凌的博客</title><meta name="author" content="墨凌"><meta name="copyright" content="墨凌"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="HTTP&#x2F;1.1 协议的性能问题 消息的大小变大了，从几KB大小的消息，到几MB大小的消息； 页面资源变多了，从每个页面不到10个的资源，到每页超100多个资源； 内容形式变多样了，从单纯到文本内容，到图片、视频、音频等内容； 实时性要求变高了，对页面的实时性要求的应用越来越多；  这些变化带来的最大性能问题就是 HTTP&#x2F;1.1 的高延迟，延迟高必然影响的就是用户体验。主要原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HTTP&#x2F;2">
+<meta property="og:url" content="https://mo0ling.github.io/posts/b52d12a8.html">
+<meta property="og:site_name" content="墨凌的博客">
+<meta property="og:description" content="HTTP&#x2F;1.1 协议的性能问题 消息的大小变大了，从几KB大小的消息，到几MB大小的消息； 页面资源变多了，从每个页面不到10个的资源，到每页超100多个资源； 内容形式变多样了，从单纯到文本内容，到图片、视频、音频等内容； 实时性要求变高了，对页面的实时性要求的应用越来越多；  这些变化带来的最大性能问题就是 HTTP&#x2F;1.1 的高延迟，延迟高必然影响的就是用户体验。主要原">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://source.fomal.cc/img/default_cover_14.webp">
+<meta property="article:published_time" content="2023-11-12T07:13:53.000Z">
+<meta property="article:modified_time" content="2023-11-14T10:15:19.787Z">
+<meta property="article:author" content="墨凌">
+<meta property="article:tag" content="HTTP&#x2F;2">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://source.fomal.cc/img/default_cover_14.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://mo0ling.github.io/posts/b52d12a8.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"OJQXVBAQG1","apiKey":"5eaa2e0c3fca2242ca816a7a80f71636","indexName":"hexoblog","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"已经过期","messageNext":"天, 这篇文章需要淘汰。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"var(--theme-color)","bgDark":"#191919","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.10.1/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'HTTP/2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-14 18:15:19'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/fonts/font.css"><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (true) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/assets/tx.jpg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="墨凌的博客"><span class="site-name">墨凌的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">HTTP/2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-12T07:13:53.000Z" title="发表于 2023-11-12 15:13:53">2023-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-14T10:15:19.787Z" title="更新于 2023-11-14 18:15:19">2023-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a><i class="fas fa-angle-right post-meta-separator"></i><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTTP/">HTTP</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>15分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="HTTP/2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="HTTP-1-1-协议的性能问题"><a href="#HTTP-1-1-协议的性能问题" class="headerlink" title="HTTP&#x2F;1.1 协议的性能问题"></a>HTTP&#x2F;1.1 协议的性能问题</h1><ul>
+<li><em>消息的大小变大了</em>，从几KB大小的消息，到几MB大小的消息；</li>
+<li><em>页面资源变多了</em>，从每个页面不到10个的资源，到每页超100多个资源；</li>
+<li><em>内容形式变多样了</em>，从单纯到文本内容，到图片、视频、音频等内容；</li>
+<li><em>实时性要求变高了</em>，对页面的实时性要求的应用越来越多；</li>
+</ul>
+<p>这些变化带来的最大性能问题就是 <strong>HTTP&#x2F;1.1 的高延迟</strong>，延迟高必然影响的就是用户体验。主要原因如下几个：</p>
+<ul>
+<li><em>延迟难以下降</em>，虽然现在网络的「带宽」相比以前变多了，但是延迟降到一定幅度后，就很难再下降了，说白了就是到达了延迟的下限；</li>
+<li><em>并发连接有限</em>，谷歌浏览器最大并发连接数是 6 个，而且每一个连接都要经过 TCP 和 TLS 握手耗时，以及 TCP 慢启动过程给流量带来的影响；</li>
+<li><em>队头阻塞问题</em>，同一连接只能在完成一个 HTTP 事务（请求和响应）后，才能处理下一个事务；</li>
+<li><em>HTTP 头部巨大且重复</em>，由于 HTTP 协议是无状态的，每一个请求都得携带 HTTP 头部，特别是对于有携带 Cookie 的头部，而 Cookie 的大小通常很大；</li>
+<li><em>不支持服务器推送消息</em>，因此当客户端需要获取通知时，只能通过定时器不断地拉取消息，这无疑浪费大量了带宽和服务器资源。</li>
+</ul>
+<p>尽管对HTTP&#x2F;1.1协议的优化，但是效果还是不尽人意，因为都是对HTTP&#x2F;1.1协议的“外部”做优化，<strong>而一些关键的地方是没办法优化的，比如请求-响应模型、头部巨大且重复、并发连接耗时、服务器不能主动推送等，要改变这些必须重新设计HTTP协议，于是HTTP&#x2F;2就出来了！</strong></p>
+<hr>
+<h1 id="兼容-HTTP-1-1"><a href="#兼容-HTTP-1-1" class="headerlink" title="兼容 HTTP&#x2F;1.1"></a>兼容 HTTP&#x2F;1.1</h1><p>第一点，HTTP&#x2F;2没有在URI里引入新的协议名，仍然用「http:&#x2F;&#x2F;」表示明文协议，用「https:&#x2F;&#x2F;」表示加密协议，于是只需要浏览器和服务器在背后自动升级协议，这样可以让用户意识不到协议的升级，很好的实现了协议的平滑升级。</p>
+<p>第二点，只在应用层做了改变，还是基于TCP协议传输，应用层方面为了保持功能上的兼容，HTTP&#x2F;2把HTTP分解成了「语义」和「语法」两个部分，「语义」层不做改动，与HTTP&#x2F;1.1完全一致，比如请求方法、状态码、头字段等规则保留不变。</p>
+<p>但是，HTTP&#x2F;2 在「语法」层面做了很多改造，基本改变了 HTTP 报文的传输格式。</p>
+<hr>
+<h1 id="头部压缩"><a href="#头部压缩" class="headerlink" title="头部压缩"></a>头部压缩</h1><p>HTTP协议的报文是由「Header+Body」构成的，对于Body部分，HTTP&#x2F;1.1协议可以使用头字段「Content-Encoding」指定Body的压缩方式，比如用gzip压缩，这样可以节约带宽，但报文中的另外一部分Header，是没有针对它的优化手段。</p>
+<p>HTTP&#x2F;1.1报文中Header部分存在的问题：</p>
+<ul>
+<li>含很多固定的字段，比如Cookie、User Agent、Accept等，这些字段加起来也高达几百字节甚至上千字节，所以有必要<strong>压缩</strong>；</li>
+<li>大量的请求和响应的报文里有很多字段值都是重复的，这样会使得大量带宽被这些冗余的数据占用了，所以有必须要<strong>避免重复性</strong>；</li>
+<li>字段是ASCII编码的，虽然易于人类观察，但效率低，所以有必要改成<strong>二进制编码</strong>；</li>
+</ul>
+<p>HTTP&#x2F;2没使用常见的gzip压缩方式来压缩头部，而是开发了<strong>HPACK</strong>算法，HPACK算法主要包含三个组成部分：</p>
+<ul>
+<li>静态字典；</li>
+<li>动态字典；</li>
+<li>Huffman 编码（压缩算法）；</li>
+</ul>
+<p>客户端和服务器两端都会建立和维护「<strong>字典</strong>」，用长度较小的索引号表示重复的字符串，再用 Huffman 编码压缩数据，<strong>可达到 50%~90% 的高压缩率</strong>。</p>
+<h2 id="静态表编码"><a href="#静态表编码" class="headerlink" title="静态表编码"></a>静态表编码</h2><p>HTTP&#x2F;2为高频出现在头部的字符串和字段建立了一张<strong>静态表</strong>，它是写入到HTTP&#x2F;2框架里的，不会变化的，静态表里共有<code>61</code>组，如下图：</p>
+<p><img src="/../../../assets/network/%E9%9D%99%E6%80%81%E8%A1%A8.webp" alt="静态表"></p>
+<p>表中的 <code>Index</code> 表示索引（Key），<code>Header Value</code> 表示索引对应的  Value，<code>Header Name</code> 表示字段的名字，比如 Index 为 2 代表 GET，Index 为 8 代表状态码 200。</p>
+<p>表中有的Index没有对应的Header Value，这是因为这些Value并不是固定的而是变化的，这些Value都会经过Huffman编码后，才会发送出去。</p>
+<p>下面这个 <code>server</code> 头部字段，在 HTTP&#x2F;1.1 的形式如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">server: nghttpx\r\n</span><br></pre></td></tr></table></figure>
+
+<p>算上冒号空格和末尾的<code>\r\n</code>，共占用了 17 字节，<strong>而使用了静态表和Huffman编码，可以将它压缩成8字节，压缩率大概47%。</strong></p>
+<p><img src="/../../../assets/network/%E9%9D%99%E6%80%81%E7%BC%96%E7%A0%81.webp" alt="server静态编码"></p>
+<p>根据 RFC7541 规范，如果头部字段属于静态表范围，并且Value是变化，那么它的 HTTP&#x2F;2头部前2位固定为<code>01</code>，所以整个头部格式如下图：</p>
+<p><img src="/../../../assets/network/%E9%9D%99%E6%80%81%E5%A4%B4%E9%83%A8.webp" alt="静态头部"></p>
+<p>HTTP&#x2F;2 头部由于基于<strong>二进制编码</strong>，就不需要冒号空格和末尾的\r\n 作为分隔符，于是改用表示字符串长度（Value Length）来分割 Index 和 Value。</p>
+<p>根据这个头部格式来分析上面抓包的 <code>server</code> 头部的二进制数据。从静态表中能查到<code>server</code>头部字段的 Index为54，二进制为110110，再加上固定01，头部格式第1个字节就是<code>01110110</code>，这正是上面抓包标注的红色部分的二进制数据。        </p>
+<p>然后，第二个字节的首个比特位表示Value是否经过Huffman编码，剩余的7位表示 Value的长度，比如这次例子的第二个字节为<code>10000110</code>，首位比特位为1就代表Value字符串是经过Huffman编码的，经过Huffman编码的Value长度为 6。</p>
+<p>最后，字符串<code>nghttpx</code>经过Huffman编码后压缩成了6个字节，Huffman编码的原理是将高频出现的信息用「较短」的编码表示，从而缩减字符串长度。</p>
+<p>于是，在统计大量的HTTP头部后，HTTP&#x2F;2根据出现频率将ASCII码编码为了 Huffman 编码表，可以在RFC7541文档找到这张<strong>静态 Huffman 表</strong>。</p>
+<p>通过查表后，字符串<code>nghttpx</code>的Huffman编码在下图看到，共6个字节，每一个字符的Huffman编码，最后的7位是补位的。</p>
+<p><img src="/../../../assets/network/nghttpx2.webp"></p>
+<p><img src="/../../../assets/network/%E9%9D%99%E6%80%81%E5%A4%B4%E9%83%A82.webp"></p>
+<h2 id="动态表编码"><a href="#动态表编码" class="headerlink" title="动态表编码"></a>动态表编码</h2><p>静态表只包含了61种高频出现在头部的字符串，不在静态表范围内的头部字符串就要自行构建<strong>动态表</strong>，它的Index从<code>62</code>起步，会在编码解码的时候随时更新。</p>
+<p>比如，第一次发送时头部中的「<code>User-Agent</code>」字段数据有上百个字节，经过Huffman编码发送出去后，客户端和服务器双方都会更新自己的动态表，添加一个新的Index号62。<strong>那么在下一次发送的时候，就不用重复发这个字段的数据了，只用发1个字节的Index号就好了，因为双方都可以根据自己的动态表获取到字段的数据</strong>。</p>
+<p>所以，使得动态表生效有一个前提：<strong>必须同一个连接上，重复传输完全相同的HTTP头部</strong>。如果消息字段在1个连接上只发送了1次，或者重复传输时，字段总是略有变化，动态表就无法被充分利用了。</p>
+<p>因此，随着在同一HTTP&#x2F;2连接上发送的报文越来越多，客户端和服务器双方的「字典」积累的越来越多，理论上最终每个头部字段都会变1个字节的 Index，这样便避免了大量的冗余数据的传输，大大节约了带宽。</p>
+<p>理想很美好，现实很骨感。动态表越大，占用的内存也就越大，如果占用了太多内存，是会影响服务器性能的，因此Web服务器都会提供类似<code>http2_max_requests</code>的配置，用于限制一个连接上能够传输的请求数量，避免动态表无限增大，请求数量到达上限后，就会关闭HTTP&#x2F;2连接来释放内存。</p>
+<p>综上，HTTP&#x2F;2头部的编码通过「静态表、动态表、Huffman 编码」共同完成的。</p>
+<p><img src="/../../../assets/network/%E5%A4%B4%E9%83%A8%E7%BC%96%E7%A0%81.webp"></p>
+<hr>
+<h1 id="二进制帧"><a href="#二进制帧" class="headerlink" title="二进制帧"></a>二进制帧</h1><p>HTTP&#x2F;2厉害的地方在于将HTTP&#x2F;1的文本格式改成二进制格式传输数据，极大提高了HTTP传输效率，而且二进制数据使用位运算能高效解析。</p>
+<p><img src="/../../../assets/network/%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%B8%A7.webp" alt="二进制帧"></p>
+<p>HTTP&#x2F;2把响应报文划分成了两类<strong>帧（<em>Frame</em>）</strong>，图中的HEADERS（首部）和DATA（消息负载）是帧的类型，也就是说一条HTTP响应，划分成了两类帧来传输，并且采用二进制来编码。</p>
+<p>比如状态码200，在 HTTP&#x2F;1.1 是用’2’’0’’0’三个字符来表示（二进制：00110010 00110000 00110000），共用了3个字节，如下图</p>
+<p><img src="/../../../assets/network/http1.webp" alt="img"></p>
+<p>在HTTP&#x2F;2对于状态码200的二进制编码是10001000，只用了1字节就能表示，相比于HTTP&#x2F;1.1节省了2个字节，如下图：</p>
+<p><img src="/../../../assets/network/h2c.webp" alt="img"></p>
+<p>Header::status: 200 OK 的编码内容为：1000 1000，那么表达的含义是什么呢？</p>
+<p><img src="/../../../assets/network/index.webp"></p>
+<ol>
+<li>最前面的1标识该Header是静态表中已经存在的KV。</li>
+<li>“:status: 200 OK”其静态表编码是8，即1000。</li>
+</ol>
+<p>因此，整体加起来就是1000 1000。</p>
+<p>HTTP&#x2F;2<strong>二进制帧</strong>的结构如下图：</p>
+<p><img src="/../../../assets/network/%E5%B8%A7%E6%A0%BC%E5%BC%8F.webp" alt="帧格式"></p>
+<p>帧头（Frame Header）很小，只有9个字节，帧开头的前3个字节表示帧数据（Frame Playload）的<strong>长度</strong>。帧长度后面的一个字节是表示<strong>帧的类型</strong>，HTTP&#x2F;2总共定义了10种类型的帧，一般分为<strong>数据帧</strong>和<strong>控制帧</strong>两类，如下表格：</p>
+<p><img src="/../../../assets/network/%E5%B8%A7%E7%B1%BB%E5%9E%8B.webp" alt="帧类型"></p>
+<p>帧类型后面的一个字节是<strong>标志位</strong>，可以保存8个标志位，用于携带简单的控制信息，比如：</p>
+<ul>
+<li><strong>END_HEADERS</strong>表示头数据结束标志，相当于HTTP&#x2F;1里头后的空行（“\r\n”）；</li>
+<li><strong>END_Stream</strong>表示单方向数据发送结束，后续不会再有数据帧。</li>
+<li><strong>PRIORITY</strong>表示流的优先级；</li>
+</ul>
+<p>帧头的最后 4 个字节是<strong>流标识符</strong>（Stream ID），但最高位被保留不用，只有 31 位可以使用，因此流标识符的最大值是 2^31，大约是 21 亿，它的作用是用来标识该 Frame 属于哪个 Stream，接收方可以根据这个信息从乱序的帧里找到相同 Stream ID 的帧，从而有序组装信息。</p>
+<p>最后面就是<strong>帧数据</strong>了，它存放的是通过 <strong>HPACK算法</strong>压缩过的 HTTP 头部和包体。</p>
+<hr>
+<h1 id="并发传输"><a href="#并发传输" class="headerlink" title="并发传输"></a>并发传输</h1><p>HTTP&#x2F;1.1的实现是基于请求-响应模型的。同一个连接中，HTTP完成一个事务（请求与响应），才能处理下一个事务，也就是说在发出请求等待响应的过程中，是没办法做其他事情的，如果响应迟迟不来，那么后续的请求是无法发送的，也造成了<strong>队头阻塞</strong>的问题。</p>
+<p>HTTP&#x2F;2通过Stream这个设计，<strong>多个 Stream 复用一条TCP连接，达到并发的效果</strong>，解决了HTTP&#x2F;1.1队头阻塞的问题，提高了HTTP传输的吞吐量。</p>
+<p><img src="/../../../assets/network/stream.webp"></p>
+<ul>
+<li>1个TCP连接包含一个或者多个Stream，Stream是HTTP&#x2F;2并发的关键技术；</li>
+<li>Stream里可以包含1个或多个Message，Message对应HTTP&#x2F;1中的请求或响应，由HTTP头部和包体构成；</li>
+<li>Message里包含一条或者多个Frame，Frame是HTTP&#x2F;2最小单位，以二进制压缩格式存放HTTP&#x2F;1中的内容（头部和包体）；</li>
+</ul>
+<p>因此，我们可以得出个结论：多个Stream跑在一条TCP连接，同一个HTTP请求与响应是跑在同一个Stream中，HTTP消息可以由多个Frame构成，一个Frame可以由多个TCP报文构成。</p>
+<p><img src="/../../../assets/network/stream2.png"></p>
+<p>在HTTP&#x2F;2连接上，<strong>不同Stream的帧是可以乱序发送的（因此可以并发不同的Stream）</strong>，因为每个帧的头部会携带Stream ID信息，所以接收端可以通过Stream ID有序组装成HTTP消息，而<strong>同一Stream内部的帧必须是严格有序的</strong>。</p>
+<p>比如下图，服务端<strong>并行交错地</strong>发送了两个响应：Stream 1 和 Stream 3，这两个 Stream 都是跑在一个 TCP 连接上，客户端收到后，会根据相同的 Stream ID 有序组装成 HTTP 消息。</p>
+<p><img src="/../../../assets/network/http2%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8.png"></p>
+<p>客户端和服务器<strong>双方都可以建立 Stream</strong>，因为服务端可以主动推送资源给客户端，客户端建立的 Stream 必须是奇数号，而服务器建立的 Stream 必须是偶数号。</p>
+<p>比如下图，Stream 1 是客户端向服务端请求的资源，属于客户端建立的 Stream，所以该 Stream 的 ID 是奇数（数字 1）；Stream 2 和 4 都是服务端主动向客户端推送的资源，属于服务端建立的 Stream，所以这两个 Stream 的 ID 是偶数（数字 2 和 4）。</p>
+<p><img src="/../../../assets/network/%E6%8E%A8%E9%80%81%E8%B5%84%E6%BA%90.webp"></p>
+<p>同一个连接中的 Stream ID 是不能复用的，只能顺序递增，所以当 Stream ID 耗尽时，需要发一个控制帧 <code>GOAWAY</code>，用来关闭 TCP 连接。 </p>
+<p>在 Nginx 中，可以通过 <code>http2_max_concurrent_Streams</code> 配置来设置 Stream 的上限，默认是 128 个。</p>
+<p>HTTP&#x2F;2 通过 Stream 实现的并发，比 HTTP&#x2F;1.1 通过 TCP 连接实现并发要牛逼的多，<strong>因为当 HTTP&#x2F;2 实现 100 个并发 Stream 时，只需要建立一次 TCP 连接，而 HTTP&#x2F;1.1 需要建立 100 个 TCP 连接，每个 TCP 连接都要经过 TCP 握手、慢启动以及 TLS 握手过程，这些都是很耗时的。</strong></p>
+<p>HTTP&#x2F;2 还可以对每个 Stream 设置不同<strong>优先级</strong>，帧头中的「标志位」可以设置优先级，比如客户端访问 HTML&#x2F;CSS 和图片资源时，希望服务器先传递 HTML&#x2F;CSS，再传图片，那么就可以通过设置 Stream 的优先级来实现，以此提高用户体验。</p>
+<hr>
+<h1 id="服务器主动推送资源"><a href="#服务器主动推送资源" class="headerlink" title="服务器主动推送资源"></a>服务器主动推送资源</h1><p>HTTP&#x2F;1.1 不支持服务器主动推送资源给客户端，都是由客户端向服务器发起请求后，才能获取到服务器响应的资源。</p>
+<p>比如，客户端通过 HTTP&#x2F;1.1 请求从服务器那获取到了 HTML 文件，而 HTML 可能还需要依赖 CSS 来渲染页面，这时客户端还要再发起获取 CSS 文件的请求，需要两次消息往返，如下图左边部分：</p>
+<p><img src="/../../../assets/network/%E6%8E%A8%E9%80%81%E8%B5%84%E6%BA%90.webp"></p>
+<p>如上图右边部分，在 HTTP&#x2F;2 中，客户端在访问 HTML 时，服务器可以直接主动推送 CSS 文件，减少了消息传递的次数。</p>
+<p>在 Nginx 中，如果你希望客户端访问 &#x2F;test.html 时，服务器直接推送 &#x2F;test.css，那么可以这么配置：</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">location</span> /test.html &#123; </span><br><span class="line">  <span class="attribute">http2_push</span> /test.css; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>那 HTTP&#x2F;2 的推送是怎么实现的？</p>
+<p>客户端发起的请求，必须使用的是奇数号 Stream，服务器主动的推送，使用的是偶数号 Stream。服务器在推送资源时，会通过 <code>PUSH_PROMISE</code> 帧传输 HTTP 头部，并通过帧中的 <code>Promised Stream ID</code> 字段告知客户端，接下来会在哪个偶数号 Stream 中发送包体。</p>
+<p><img src="/../../../assets/network/push.png"></p>
+<p>如上图，在 Stream 1 中通知客户端 CSS 资源即将到来，然后在 Stream 2 中发送 CSS 资源，注意 Stream 1 和 2 是可以<strong>并发</strong>的。</p>
+<hr>
+<h1 id="总结HTTP-1-1与HTTP-1-0区别"><a href="#总结HTTP-1-1与HTTP-1-0区别" class="headerlink" title="总结HTTP&#x2F;1.1与HTTP&#x2F;1.0区别"></a>总结HTTP&#x2F;1.1与HTTP&#x2F;1.0区别</h1><ul>
+<li><strong>多路复用（Multiplexing）</strong>：HTTP&#x2F;2.0在同一连接上可以同时传输多个请求和响应（可以看作是HTTP&#x2F;1.1中长链接的升级版本），互不干扰。HTTP&#x2F;1.1则使用串行方式，每个请求和响应都需要独立的连接，而浏览器为了控制资源会有6-8个TCP连接都限制。这使得HTTP&#x2F;2.0在处理多个请求时更加高效，减少了网络延迟和提高了性能。</li>
+<li><strong>二进制帧（Binary Frames）</strong>：HTTP&#x2F;2.0使用二进制帧进行数据传输，而HTTP&#x2F;1.1则使用文本格式的报文。二进制帧更加紧凑和高效，减少了传输的数据量和带宽消耗。</li>
+<li><strong>头部压缩（Header Compression）</strong>：HTTP&#x2F;1.1 支持<code>Body</code>压缩，<code>Header</code>不支持压缩。HTTP&#x2F;2.0 支持对<code>Header</code>压缩，使用了专门为<code>Header</code>压缩而设计的 HPACK 算法，减少了网络开销。HTTP头部通过<strong>静态表和 Huffman 编码</strong>的方式，将体积压缩了近一半，而且针对后续的请求头部，还可以建立<strong>动态表</strong>，将体积压缩近 90%，大大提高了编码效率，同时节约了带宽资源。</li>
+<li><strong>服务器推送（Server Push）</strong>：HTTP&#x2F;2.0 支持服务器推送，可以在客户端请求一个资源时，将其他相关资源一并推送给客户端，从而减少了客户端的请求次数和延迟。而 HTTP&#x2F;1.1 需要客户端自己发送请求来获取相关资源。服务器推送资源时，会先发送PUSH_PROMISE帧，告诉客户端接下来在哪个Stream发送资源，然后用偶数号Stream发送资源给客户端。</li>
+</ul>
+<hr>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>HTTP&#x2F;2动态表并非可以无限增大，因为动态表是会占用内存的，动态表越大，内存也越大，容易影响服务器总体的并发能力，因此服务器需要限制 HTTP&#x2F;2 连接时长或者请求次数。HTTP&#x2F;2通过 Stream 的并发能力，解决了 HTTP&#x2F;1 队头阻塞的问题，看似很完美了，但是HTTP&#x2F;2还是存在“队头阻塞”的问题，只不过问题不是在HTTP这一层面，而是在TCP这一层。</p>
+<p><strong>HTTP&#x2F;2 是基于 TCP 协议来传输数据的，TCP 是字节流协议，TCP 层必须保证收到的字节数据是完整且连续的，这样内核才会将缓冲区里的数据返回给 HTTP 应用，那么当「前 1 个字节数据」没有到达时，后收到的字节数据只能存放在内核缓冲区里，只有等到这 1 个字节数据到达时，HTTP&#x2F;2 应用层才能从内核中拿到数据，这就是 HTTP&#x2F;2 队头阻塞问题。</strong></p>
+<p>既然是 TCP 协议自身的问题，那干脆放弃 TCP 协议，转而使用 UDP 协议作为传输层协议，这个大胆的决定，HTTP&#x2F;3 协议做了！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io">墨凌</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io/posts/b52d12a8.html">https://mo0ling.github.io/posts/b52d12a8.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mo0ling.github.io" target="_blank">墨凌的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/HTTP-2/">HTTP/2</a></div><div class="post_share"><div class="social-share" data-image="https://source.fomal.cc/img/default_cover_14.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b52d12a7.html" title="HTTP/1"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">HTTP/1</div></div></a></div><div class="next-post pull-right"><a href="/posts/b52d12a9.html" title="HTTPS"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HTTPS</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#HTTP-1-1-%E5%8D%8F%E8%AE%AE%E7%9A%84%E6%80%A7%E8%83%BD%E9%97%AE%E9%A2%98"><span class="toc-number">1.</span> <span class="toc-text">HTTP&#x2F;1.1 协议的性能问题</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%BC%E5%AE%B9-HTTP-1-1"><span class="toc-number">2.</span> <span class="toc-text">兼容 HTTP&#x2F;1.1</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A4%B4%E9%83%A8%E5%8E%8B%E7%BC%A9"><span class="toc-number">3.</span> <span class="toc-text">头部压缩</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%9D%99%E6%80%81%E8%A1%A8%E7%BC%96%E7%A0%81"><span class="toc-number">3.1.</span> <span class="toc-text">静态表编码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E8%A1%A8%E7%BC%96%E7%A0%81"><span class="toc-number">3.2.</span> <span class="toc-text">动态表编码</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E5%B8%A7"><span class="toc-number">4.</span> <span class="toc-text">二进制帧</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E4%BC%A0%E8%BE%93"><span class="toc-number">5.</span> <span class="toc-text">并发传输</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%BB%E5%8A%A8%E6%8E%A8%E9%80%81%E8%B5%84%E6%BA%90"><span class="toc-number">6.</span> <span class="toc-text">服务器主动推送资源</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93HTTP-1-1%E4%B8%8EHTTP-1-0%E5%8C%BA%E5%88%AB"><span class="toc-number">7.</span> <span class="toc-text">总结HTTP&#x2F;1.1与HTTP&#x2F;1.0区别</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><div id="footer-wrap"><div class="copyright">&copy;2023  <i id="heartbeat" class="fa fas fa-heartbeat"></i> 墨凌</div><div class="footer_custom_text">你好, 欢迎来到我的博客!</div></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-home"><i class="fa-solid fa-house"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/archives/"><i class="fa-solid fa-archive"></i><span>文章归档</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="fa-solid fa-folder-open"></i><span>文章分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="fa-solid fa-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuNormal"><a class="rightMenu-item menu-link" id="menu-radompage" href="/random/index.html"><i class="fa-solid fa-shoe-prints"></i><span>随便逛逛</span></a><div class="rightMenu-item" id="menu-translate"><i class="fa-solid fa-earth-asia"></i><span>繁简切换</span></div><div class="rightMenu-item" id="menu-darkmode"><i class="fa-solid fa-moon"></i><span>切换模式</span></div></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="https://cdn.staticfile.org/algoliasearch/4.14.3/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.staticfile.org/instantsearch.js/4.49.2/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><div class="aplayer no-destroy" data-id="7427714271" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-lrctype="1" data-preload="none" data-autoplay="true" muted></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><script defer data-pjax src="/js/rightMenu.js"></script><script async src="/js/diytitle.js"></script><script async src="/js/grayscale.js"></script><script async src="/js/cursor.js"></script><script async src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/canvas-nest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '68cca326e7b348b69328ea977b6186fe# 你的key';
+  var gaud_map_key = 'ba1713bd268fa5e98ff6fa04501dc306# 你的key';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 280px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://github-calendar-api-amber.vercel.app/api?mo0ling",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'mo0ling')
+    }
+  </script><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --></body></html>

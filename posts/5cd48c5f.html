@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>DelayQueue 源码分析 | 墨凌的博客</title><meta name="author" content="墨凌"><meta name="copyright" content="墨凌"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="DelayQueue 简介DelayQueue 是 JUC 包(java.util.concurrent)为我们提供的延迟队列，用于实现延时任务比如订单下单 15 分钟未支付直接取消。它是 BlockingQueue 的一种，底层是一个基于 PriorityQueue 实现的一个无界队列，是线程安全的。关于PriorityQueue可以参考笔者编写的这篇文章：PriorityQueue 源码分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DelayQueue 源码分析">
+<meta property="og:url" content="https://mo0ling.github.io/posts/5cd48c5f.html">
+<meta property="og:site_name" content="墨凌的博客">
+<meta property="og:description" content="DelayQueue 简介DelayQueue 是 JUC 包(java.util.concurrent)为我们提供的延迟队列，用于实现延时任务比如订单下单 15 分钟未支付直接取消。它是 BlockingQueue 的一种，底层是一个基于 PriorityQueue 实现的一个无界队列，是线程安全的。关于PriorityQueue可以参考笔者编写的这篇文章：PriorityQueue 源码分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://source.fomal.cc/img/default_cover_14.webp">
+<meta property="article:published_time" content="2023-11-12T08:50:54.620Z">
+<meta property="article:modified_time" content="2023-11-12T01:53:43.063Z">
+<meta property="article:author" content="墨凌">
+<meta property="article:tag" content="Java集合">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://source.fomal.cc/img/default_cover_14.webp"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://mo0ling.github.io/posts/5cd48c5f.html"><link rel="preconnect" href="//cdnjs.cloudflare.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin=""/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: {"appId":"OJQXVBAQG1","apiKey":"5eaa2e0c3fca2242ca816a7a80f71636","indexName":"hexoblog","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容：${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简"},
+  noticeOutdate: {"limitDay":365,"position":"top","messagePrev":"已经过期","messageNext":"天, 这篇文章需要淘汰。"},
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体中文","cht_to_chs":"你已切换为简体中文","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"var(--theme-color)","bgDark":"#191919","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdnjs.cloudflare.com/ajax/libs/egjs-infinitegrid/4.10.1/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DelayQueue 源码分析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-11-12 09:53:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><link rel="stylesheet" href="/fonts/font.css"><link rel="stylesheet" href="https://cdn1.tianli0.top/npm/element-ui@2.15.6/packages/theme-chalk/lib/index.css"><style id="defineBg"></style><style id="menu_shadow"></style><svg aria-hidden="true" style="position:absolute; overflow:hidden; width:0; height:0"><symbol id="icon-sun" viewBox="0 0 1024 1024"><path d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z" fill="#FFD878" p-id="8420"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9" p-id="8421"></path><path d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z" fill="#4D5152" p-id="8422"></path><path d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z" fill="#4D5152" p-id="8423"></path></symbol><symbol id="icon-moon" viewBox="0 0 1024 1024"><path d="M611.370667 167.082667a445.013333 445.013333 0 0 1-38.4 161.834666 477.824 477.824 0 0 1-244.736 244.394667 445.141333 445.141333 0 0 1-161.109334 38.058667 85.077333 85.077333 0 0 0-65.066666 135.722666A462.08 462.08 0 1 0 747.093333 102.058667a85.077333 85.077333 0 0 0-135.722666 65.024z" fill="#FFB531" p-id="11345"></path><path d="M329.728 274.133333l35.157333-35.157333a21.333333 21.333333 0 1 0-30.165333-30.165333l-35.157333 35.157333-35.114667-35.157333a21.333333 21.333333 0 0 0-30.165333 30.165333l35.114666 35.157333-35.114666 35.157334a21.333333 21.333333 0 1 0 30.165333 30.165333l35.114667-35.157333 35.157333 35.157333a21.333333 21.333333 0 1 0 30.165333-30.165333z" fill="#030835" p-id="11346"></path></symbol></svg><!-- hexo injector head_end start --><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-categories-card@1.0.0/lib/categorybar.css"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/animate.min.css" media="print" onload="this.media='screen'"><link rel="stylesheet" href="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.css" /><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 7.0.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+  window.addEventListener('load',() => { preloader.endLoading() })
+
+  if (true) {
+    document.addEventListener('pjax:send', () => { preloader.initLoading() })
+    document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+  }
+})()</script><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/assets/tx.jpg" onerror="onerror=null;src='/assets/r1.jpg'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">131</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">32</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">13</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><nav id="nav"><span id="blog-info"><a href="/" title="墨凌的博客"><span class="site-name">墨凌的博客</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw icon-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon--article"></i><span> 文章</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></li><li><a class="site-page child" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></li><li><a class="site-page child" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></li></ul></div><div class="menus_item"><a class="site-page group" href="javascript:void(0);"><i class="fa-fw icon-wangye"></i><span> 网站</span><i class="fas fa-chevron-down"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/site/census/"><i class="fa-fw icon--tongjibiao"></i><span> 网站统计</span></a></li><li><a class="site-page child" href="/site/echarts/"><i class="fa-fw icon-shujutongji1"></i><span> 文章统计</span></a></li><li><a class="site-page child" href="/site/time/"><i class="fa-fw icon-xianxingshalou"></i><span> 旧时光</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw faa-tada"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DelayQueue 源码分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-11-12T08:50:54.620Z" title="发表于 2023-11-12 16:50:54">2023-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-11-12T01:53:43.063Z" title="更新于 2023-11-12 09:53:43">2023-11-12</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Java/">Java</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="DelayQueue 源码分析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="DelayQueue-简介"><a href="#DelayQueue-简介" class="headerlink" title="DelayQueue 简介"></a>DelayQueue 简介</h2><p><code>DelayQueue</code> 是 JUC 包(<code>java.util.concurrent)</code>为我们提供的延迟队列，用于实现延时任务比如订单下单 15 分钟未支付直接取消。它是 <code>BlockingQueue</code> 的一种，底层是一个基于 <code>PriorityQueue</code> 实现的一个无界队列，是线程安全的。关于<code>PriorityQueue</code>可以参考笔者编写的这篇文章：<a href="./priorityqueue-source-code.md">PriorityQueue 源码分析</a> 。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/blocking-queue-hierarchy.png" alt="BlockingQueue 的实现类"></p>
+<p><code>DelayQueue</code> 中存放的元素必须实现 <code>Delayed</code> 接口，并且需要重写 <code>getDelay()</code>方法（计算是否到期）。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">Delayed</span> <span class="keyword">extends</span> <span class="title class_">Comparable</span>&lt;Delayed&gt; &#123;</span><br><span class="line">    <span class="type">long</span> <span class="title function_">getDelay</span><span class="params">(TimeUnit unit)</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>默认情况下, <code>DelayQueue</code> 会按照到期时间升序编排任务。只有当元素过期时（<code>getDelay()</code>方法返回值小于等于 0），才能从队列中取出。</p>
+<h2 id="DelayQueue-发展史"><a href="#DelayQueue-发展史" class="headerlink" title="DelayQueue 发展史"></a>DelayQueue 发展史</h2><ul>
+<li><code>DelayQueue</code> 最早是在 Java 5 中引入的，作为 <code>java.util.concurrent</code> 包中的一部分，用于支持基于时间的任务调度和缓存过期删除等场景，该版本仅仅支持延迟功能的实现，还未解决线程安全问题。</li>
+<li>在 Java 6 中，<code>DelayQueue</code> 的实现进行了优化，通过使用 <code>ReentrantLock</code> 和 <code>Condition</code> 解决线程安全及线程间交互的效率，提高了其性能和可靠性。</li>
+<li>在 Java 7 中，<code>DelayQueue</code> 的实现进行了进一步的优化，通过使用 CAS 操作实现元素的添加和移除操作，提高了其并发操作性能。</li>
+<li>在 Java 8 中，<code>DelayQueue</code> 的实现没有进行重大变化，但是在 <code>java.time</code> 包中引入了新的时间类，如 <code>Duration</code> 和 <code>Instant</code>，使得使用 <code>DelayQueue</code> 进行基于时间的调度更加方便和灵活。</li>
+<li>在 Java 9 中，<code>DelayQueue</code> 的实现进行了一些微小的改进，主要是对代码进行了一些优化和精简。</li>
+</ul>
+<p>总的来说，<code>DelayQueue</code> 的发展史主要是通过优化其实现方式和提高其性能和可靠性，使其更加适用于基于时间的调度和缓存过期删除等场景。</p>
+<h2 id="DelayQueue-常见使用场景示例"><a href="#DelayQueue-常见使用场景示例" class="headerlink" title="DelayQueue 常见使用场景示例"></a>DelayQueue 常见使用场景示例</h2><p>我们这里希望任务可以按照我们预期的时间执行，例如提交 3 个任务，分别要求 1s、2s、3s 后执行，即使是乱序添加，1s 后要求 1s 执行的任务会准时执行。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/delayed-task.png" alt="延迟任务"></p>
+<p>对此我们可以使用 <code>DelayQueue</code> 来实现,所以我们首先需要继承 <code>Delayed</code> 实现 <code>DelayedTask</code>，实现 <code>getDelay</code> 方法以及优先级比较 <code>compareTo</code>。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 延迟任务</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DelayedTask</span> <span class="keyword">implements</span> <span class="title class_">Delayed</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 任务到期时间</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> executeTime;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 任务</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> Runnable task;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">DelayedTask</span><span class="params">(<span class="type">long</span> delay, Runnable task)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.executeTime = System.currentTimeMillis() + delay;</span><br><span class="line">        <span class="built_in">this</span>.task = task;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 查看当前任务还有多久到期</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unit</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">getDelay</span><span class="params">(TimeUnit unit)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> unit.convert(executeTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 延迟队列需要到期时间升序入队，所以我们需要实现compareTo进行到期时间比较</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> o</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">compareTo</span><span class="params">(Delayed o)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> Long.compare(<span class="built_in">this</span>.executeTime, ((DelayedTask) o).executeTime);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">()</span> &#123;</span><br><span class="line">        task.run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>完成任务的封装之后，使用就很简单了，设置好多久到期然后将任务提交到延迟队列中即可。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建延迟队列，并添加任务</span></span><br><span class="line">DelayQueue &lt; DelayedTask &gt; delayQueue = <span class="keyword">new</span> <span class="title class_">DelayQueue</span> &lt; &gt; ();</span><br><span class="line"></span><br><span class="line"><span class="comment">//分别添加1s、2s、3s到期的任务</span></span><br><span class="line">delayQueue.add(<span class="keyword">new</span> <span class="title class_">DelayedTask</span>(<span class="number">2000</span>, () -&gt; System.out.println(<span class="string">&quot;Task 2&quot;</span>)));</span><br><span class="line">delayQueue.add(<span class="keyword">new</span> <span class="title class_">DelayedTask</span>(<span class="number">1000</span>, () -&gt; System.out.println(<span class="string">&quot;Task 1&quot;</span>)));</span><br><span class="line">delayQueue.add(<span class="keyword">new</span> <span class="title class_">DelayedTask</span>(<span class="number">3000</span>, () -&gt; System.out.println(<span class="string">&quot;Task 3&quot;</span>)));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 取出任务并执行</span></span><br><span class="line"><span class="keyword">while</span> (!delayQueue.isEmpty()) &#123;</span><br><span class="line">  <span class="comment">//阻塞获取最先到期的任务</span></span><br><span class="line">  <span class="type">DelayedTask</span> <span class="variable">task</span> <span class="operator">=</span> delayQueue.take();</span><br><span class="line">  <span class="keyword">if</span> (task != <span class="literal">null</span>) &#123;</span><br><span class="line">    task.execute();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从输出结果可以看出，即使笔者先提到 2s 到期的任务，1s 到期的任务 Task1 还是优先执行的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Task <span class="number">1</span></span><br><span class="line">Task <span class="number">2</span></span><br><span class="line">Task <span class="number">3</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="DelayQueue-源码解析"><a href="#DelayQueue-源码解析" class="headerlink" title="DelayQueue 源码解析"></a>DelayQueue 源码解析</h2><p>这里以 JDK1.8 为例，分析一下 <code>DelayQueue</code> 的底层核心源码。</p>
+<p><code>DelayQueue</code> 的类定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">DelayQueue</span>&lt;E <span class="keyword">extends</span> <span class="title class_">Delayed</span>&gt; <span class="keyword">extends</span> <span class="title class_">AbstractQueue</span>&lt;E&gt; <span class="keyword">implements</span> <span class="title class_">BlockingQueue</span>&lt;E&gt;</span><br><span class="line">&#123;</span><br><span class="line">  <span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DelayQueue</code> 继承了 <code>AbstractQueue</code> 类，实现了 <code>BlockingQueue</code> 接口。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/delayqueue-class-diagram.png" alt="DelayQueue类图"></p>
+<h3 id="核心成员变量"><a href="#核心成员变量" class="headerlink" title="核心成员变量"></a>核心成员变量</h3><p><code>DelayQueue</code> 的 4 个核心成员变量如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//可重入锁，实现线程安全的关键</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">transient</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ReentrantLock</span>();</span><br><span class="line"><span class="comment">//延迟队列底层存储数据的集合,确保元素按照到期时间升序排列</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> PriorityQueue&lt;E&gt; q = <span class="keyword">new</span> <span class="title class_">PriorityQueue</span>&lt;E&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">//指向准备执行优先级最高的线程</span></span><br><span class="line"><span class="keyword">private</span> <span class="type">Thread</span> <span class="variable">leader</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line"><span class="comment">//实现多线程之间等待唤醒的交互</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">Condition</span> <span class="variable">available</span> <span class="operator">=</span> lock.newCondition();</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>lock</code> : 我们都知道 <code>DelayQueue</code> 存取是线程安全的，所以为了保证存取元素时线程安全，我们就需要在存取时上锁，而 <code>DelayQueue</code> 就是基于 <code>ReentrantLock</code> 独占锁确保存取操作的线程安全。</li>
+<li><code>q</code> : 延迟队列要求元素按照到期时间进行升序排列，所以元素添加时势必需要进行优先级排序,所以 <code>DelayQueue</code> 底层元素的存取都是通过这个优先队列 <code>PriorityQueue</code> 的成员变量 <code>q</code> 来管理的。</li>
+<li><code>leader</code> : 延迟队列的任务只有到期之后才会执行,对于没有到期的任务只有等待,为了确保优先级最高的任务到期后可以即刻被执行,设计者就用 <code>leader</code> 来管理延迟任务，只有 <code>leader</code> 所指向的线程才具备定时等待任务到期执行的权限，而其他那些优先级低的任务只能无限期等待，直到 <code>leader</code> 线程执行完手头的延迟任务后唤醒它。</li>
+<li><code>available</code> : 上文讲述 <code>leader</code> 线程时提到的等待唤醒操作的交互就是通过 <code>available</code> 实现的，假如线程 1 尝试在空的 <code>DelayQueue</code> 获取任务时，<code>available</code> 就会将其放入等待队列中。直到有一个线程添加一个延迟任务后通过 <code>available</code> 的 <code>signal</code> 方法将其唤醒。</li>
+</ul>
+<h3 id="构造方法"><a href="#构造方法" class="headerlink" title="构造方法"></a>构造方法</h3><p>相较于其他的并发容器，延迟队列的构造方法比较简单，它只有两个构造方法，因为所有成员变量在类加载时都已经初始完成了，所以默认构造方法什么也没做。还有一个传入 <code>Collection</code> 对象的构造方法，它会将调用 <code>addAll()</code>方法将集合元素存到优先队列 <code>q</code> 中。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="title function_">DelayQueue</span><span class="params">()</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="title function_">DelayQueue</span><span class="params">(Collection&lt;? extends E&gt; c)</span> &#123;</span><br><span class="line">    <span class="built_in">this</span>.addAll(c);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加元素"><a href="#添加元素" class="headerlink" title="添加元素"></a>添加元素</h3><p><code>DelayQueue</code> 添加元素的方法无论是 <code>add</code>、<code>put</code> 还是 <code>offer</code>,本质上就是调用一下 <code>offer</code> ,所以了解延迟队列的添加逻辑我们只需阅读 offer 方法即可。</p>
+<p><code>offer</code> 方法的整体逻辑为:</p>
+<ol>
+<li>尝试获取 <code>lock</code> 。</li>
+<li>如果上锁成功,则调 <code>q</code> 的 <code>offer</code> 方法将元素存放到优先队列中。</li>
+<li>调用 <code>peek</code> 方法看看当前队首元素是否就是本次入队的元素,如果是则说明当前这个元素是即将到期的任务(即优先级最高的元素)，于是将 <code>leader</code> 设置为空,通知因为队列为空时调用 <code>take</code> 等方法导致阻塞的线程来争抢元素。</li>
+<li>上述步骤执行完成，释放 <code>lock</code>。</li>
+<li>返回 true。</li>
+</ol>
+<p>源码如下，笔者已详细注释，读者可自行参阅:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">offer</span><span class="params">(E e)</span> &#123;</span><br><span class="line">    <span class="comment">//尝试获取lock</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//如果上锁成功,则调q的offer方法将元素存放到优先队列中</span></span><br><span class="line">        q.offer(e);</span><br><span class="line">        <span class="comment">//调用peek方法看看当前队首元素是否就是本次入队的元素,如果是则说明当前这个元素是即将到期的任务(即优先级最高的元素)</span></span><br><span class="line">        <span class="keyword">if</span> (q.peek() == e) &#123;</span><br><span class="line">            <span class="comment">//将leader设置为空,通知调用取元素方法而阻塞的线程来争抢这个任务</span></span><br><span class="line">            leader = <span class="literal">null</span>;</span><br><span class="line">            available.signal();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//上述步骤执行完成，释放lock</span></span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取元素"><a href="#获取元素" class="headerlink" title="获取元素"></a>获取元素</h3><p><code>DelayQueue</code> 中获取元素的方式分为阻塞式和非阻塞式，先来看看逻辑比较复杂的阻塞式获取元素方法 <code>take</code>,为了让读者可以更直观的了解阻塞式获取元素的全流程，笔者将以 3 个线程并发获取元素为例讲述 <code>take</code> 的工作流程。</p>
+<blockquote>
+<p>想要理解下面的内容，需要用到 AQS 相关的知识，推荐阅读下面这两篇文章：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://xie.infoq.cn/article/5a3cc0b709012d40cb9f41986">图文讲解 AQS ，一起看看 AQS 的源码……(图文较长)</a></li>
+<li><a target="_blank" rel="noopener" href="https://xie.infoq.cn/article/0223d5e5f19726b36b084b10d">AQS 都看完了，Condition 原理可不能少！</a></li>
+</ul>
+</blockquote>
+<p>1、首先， 3 个线程会尝试获取可重入锁 <code>lock</code>,假设我们现在有 3 个线程分别是 t1、t2、t3,随后 t1 得到了锁，而 t2、t3 没有抢到锁，故将这两个线程存入等待队列中。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/delayqueue-take-0.png"></p>
+<p>2、紧接着 t1 开始进行元素获取的逻辑。</p>
+<p>3、线程 t1 首先会查看 <code>DelayQueue</code> 队列首元素是否为空。</p>
+<p>4、如果元素为空，则说明当前队列没有任何元素，故 t1 就会被阻塞存到 <code>conditionWaiter</code> 这个队列中。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/delayqueue-take-1.png"></p>
+<p>注意，调用 <code>await</code> 之后 t1 就会释放 <code>lcok</code> 锁，假如 <code>DelayQueue</code> 持续为空，那么 t2、t3 也会像 t1 一样执行相同的逻辑并进入 <code>conditionWaiter</code> 队列中。</p>
+<p><img src="https://oss.javaguide.cn/github/javaguide/java/collection/delayqueue-take-2.png"></p>
+<p>如果元素不为空，则判断当前任务是否到期，如果元素到期，则直接返回出去。如果元素未到期，则判断当前 <code>leader</code> 线程(<code>DelayQueue</code> 中唯一一个可以等待并获取元素的线程引用)是否为空，若不为空，则说明当前 <code>leader</code> 正在等待执行一个优先级比当前元素还高的元素到期，故当前线程 t1 只能调用 <code>await</code> 进入无限期等待，等到 <code>leader</code> 取得元素后唤醒。反之，若 <code>leader</code> 线程为空，则将当前线程设置为 leader 并进入有限期等待,到期后取出元素并返回。</p>
+<p>自此我们阻塞式获取元素的逻辑都已完成后,源码如下，读者可自行参阅:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">take</span><span class="params">()</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="comment">// 尝试获取可重入锁,将底层AQS的state设置为1,并设置为独占锁</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">    lock.lockInterruptibly();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">            <span class="comment">//查看队列第一个元素</span></span><br><span class="line">            <span class="type">E</span> <span class="variable">first</span> <span class="operator">=</span> q.peek();</span><br><span class="line">            <span class="comment">//若为空,则将当前线程放入ConditionObject的等待队列中，并将底层AQS的state设置为0，表示释放锁并进入无限期等待</span></span><br><span class="line">            <span class="keyword">if</span> (first == <span class="literal">null</span>)</span><br><span class="line">                available.await();</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//若元素不为空，则查看当前元素多久到期</span></span><br><span class="line">                <span class="type">long</span> <span class="variable">delay</span> <span class="operator">=</span> first.getDelay(NANOSECONDS);</span><br><span class="line">                <span class="comment">//如果小于0则说明已到期直接返回出去</span></span><br><span class="line">                <span class="keyword">if</span> (delay &lt;= <span class="number">0</span>)</span><br><span class="line">                    <span class="keyword">return</span> q.poll();</span><br><span class="line">                <span class="comment">//如果大于0则说明任务还没到期，首先需要释放对这个元素的引用</span></span><br><span class="line">                first = <span class="literal">null</span>; <span class="comment">// don&#x27;t retain ref while waiting</span></span><br><span class="line">                <span class="comment">//判断leader是否为空，如果不为空，则说明正有线程作为leader并等待一个任务到期，则当前线程进入无限期等待</span></span><br><span class="line">                <span class="keyword">if</span> (leader != <span class="literal">null</span>)</span><br><span class="line">                    available.await();</span><br><span class="line">                <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//反之将我们的线程成为leader</span></span><br><span class="line">                    <span class="type">Thread</span> <span class="variable">thisThread</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">                    leader = thisThread;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        <span class="comment">//并进入有限期等待</span></span><br><span class="line">                        available.awaitNanos(delay);</span><br><span class="line">                    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                        <span class="comment">//等待任务到期时，释放leader引用，进入下一次循环将任务return出去</span></span><br><span class="line">                        <span class="keyword">if</span> (leader == thisThread)</span><br><span class="line">                            leader = <span class="literal">null</span>;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//收尾逻辑:如果leader不为空且q有元素，则说明有任务没人认领，直接发起通知唤醒因为锁被当前消费者持有而导致阻塞的生产者(即调用put、add、offer的线程)</span></span><br><span class="line">        <span class="keyword">if</span> (leader == <span class="literal">null</span> &amp;&amp; q.peek() != <span class="literal">null</span>)</span><br><span class="line">            available.signal();</span><br><span class="line">        <span class="comment">//释放锁</span></span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们再来看看非阻塞的获取元素方法 <code>poll</code> ，逻辑比较简单，整体步骤如下:</p>
+<ol>
+<li>尝试获取可重入锁。</li>
+<li>查看队列第一个元素,判断元素是否为空。</li>
+<li>若元素为空，或者元素未到期，则直接返回空。</li>
+<li>若元素不为空且到期了，直接调用 <code>poll</code> 返回出去。</li>
+<li>释放可重入锁 <code>lock</code> 。</li>
+</ol>
+<p>源码如下,读者可自行参阅源码及注释:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">poll</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//尝试获取可重入锁</span></span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//查看队列第一个元素,判断元素是否为空</span></span><br><span class="line">        <span class="type">E</span> <span class="variable">first</span> <span class="operator">=</span> q.peek();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//若元素为空，或者元素未到期，则直接返回空</span></span><br><span class="line">        <span class="keyword">if</span> (first == <span class="literal">null</span> || first.getDelay(NANOSECONDS) &gt; <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            <span class="comment">//若元素不为空且到期了，直接调用poll返回出去</span></span><br><span class="line">            <span class="keyword">return</span> q.poll();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">//释放可重入锁lock</span></span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查看元素"><a href="#查看元素" class="headerlink" title="查看元素"></a>查看元素</h3><p>上文获取元素时都会调用到 <code>peek</code> 方法，peek 顾名思义仅仅窥探一下队列中的元素，它的步骤就 4 步:</p>
+<ol>
+<li>上锁。</li>
+<li>调用优先队列 q 的 peek 方法查看索引 0 位置的元素。</li>
+<li>释放锁。</li>
+<li>将元素返回出去。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> E <span class="title function_">peek</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> <span class="type">ReentrantLock</span> <span class="variable">lock</span> <span class="operator">=</span> <span class="built_in">this</span>.lock;</span><br><span class="line">    lock.lock();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> q.peek();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        lock.unlock();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="DelayQueue-常见面试题"><a href="#DelayQueue-常见面试题" class="headerlink" title="DelayQueue 常见面试题"></a>DelayQueue 常见面试题</h2><h3 id="DelayQueue-的实现原理是什么？"><a href="#DelayQueue-的实现原理是什么？" class="headerlink" title="DelayQueue 的实现原理是什么？"></a>DelayQueue 的实现原理是什么？</h3><p><code>DelayQueue</code> 底层是使用优先队列 <code>PriorityQueue</code> 来存储元素，而 <code>PriorityQueue</code> 采用二叉小顶堆的思想确保值小的元素排在最前面，这就使得 <code>DelayQueue</code> 对于延迟任务优先级的管理就变得十分方便了。同时 <code>DelayQueue</code> 为了保证线程安全还用到了可重入锁 <code>ReentrantLock</code>,确保单位时间内只有一个线程可以操作延迟队列。最后，为了实现多线程之间等待和唤醒的交互效率，<code>DelayQueue</code> 还用到了 <code>Condition</code>，通过 <code>Condition</code> 的 <code>await</code> 和 <code>signal</code> 方法完成多线程之间的等待唤醒。</p>
+<h3 id="DelayQueue-的实现是否线程安全？"><a href="#DelayQueue-的实现是否线程安全？" class="headerlink" title="DelayQueue 的实现是否线程安全？"></a>DelayQueue 的实现是否线程安全？</h3><p><code>DelayQueue</code> 的实现是线程安全的，它通过 <code>ReentrantLock</code> 实现了互斥访问和 <code>Condition</code> 实现了线程间的等待和唤醒操作，可以保证多线程环境下的安全性和可靠性。</p>
+<h3 id="DelayQueue-的使用场景有哪些？"><a href="#DelayQueue-的使用场景有哪些？" class="headerlink" title="DelayQueue 的使用场景有哪些？"></a>DelayQueue 的使用场景有哪些？</h3><p><code>DelayQueue</code> 通常用于实现定时任务调度和缓存过期删除等场景。在定时任务调度中，需要将需要执行的任务封装成延迟任务对象，并将其添加到 <code>DelayQueue</code> 中，<code>DelayQueue</code> 会自动按照剩余延迟时间进行升序排序(默认情况)，以保证任务能够按照时间先后顺序执行。对于缓存过期这个场景而言，在数据被缓存到内存之后，我们可以将缓存的 key 封装成一个延迟的删除任务，并将其添加到 <code>DelayQueue</code> 中，当数据过期时，拿到这个任务的 key，将这个 key 从内存中移除。</p>
+<h3 id="DelayQueue-中-Delayed-接口的作用是什么？"><a href="#DelayQueue-中-Delayed-接口的作用是什么？" class="headerlink" title="DelayQueue 中 Delayed 接口的作用是什么？"></a>DelayQueue 中 Delayed 接口的作用是什么？</h3><p><code>Delayed</code> 接口定义了元素的剩余延迟时间(<code>getDelay</code>)和元素之间的比较规则(该接口继承了 <code>Comparable</code> 接口)。若希望元素能够存放到 <code>DelayQueue</code> 中，就必须实现 <code>Delayed</code> 接口的 <code>getDelay()</code> 方法和 <code>compareTo()</code> 方法，否则 <code>DelayQueue</code> 无法得知当前任务剩余时长和任务优先级的比较。</p>
+<h3 id="DelayQueue-和-Timer-TimerTask-的区别是什么？"><a href="#DelayQueue-和-Timer-TimerTask-的区别是什么？" class="headerlink" title="DelayQueue 和 Timer&#x2F;TimerTask 的区别是什么？"></a>DelayQueue 和 Timer&#x2F;TimerTask 的区别是什么？</h3><p><code>DelayQueue</code> 和 <code>Timer/TimerTask</code> 都可以用于实现定时任务调度，但是它们的实现方式不同。<code>DelayQueue</code> 是基于优先级队列和堆排序算法实现的，可以实现多个任务按照时间先后顺序执行；而 <code>Timer/TimerTask</code> 是基于单线程实现的，只能按照任务的执行顺序依次执行，如果某个任务执行时间过长，会影响其他任务的执行。另外，<code>DelayQueue</code> 还支持动态添加和移除任务，而 <code>Timer/TimerTask</code> 只能在创建时指定任务。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li>《深入理解高并发编程：JDK 核心技术》:</li>
+<li>一口气说出 Java 6 种延时队列的实现方法(面试官也得服):<a target="_blank" rel="noopener" href="https://www.jb51.net/article/186192.htm">https://www.jb51.net/article/186192.htm</a></li>
+<li>图解 DelayQueue 源码（java 8）——延时队列的小九九: <a target="_blank" rel="noopener" href="https://blog.csdn.net/every__day/article/details/113810985">https://blog.csdn.net/every__day/article/details/113810985</a><!-- @include: @article-footer.snippet.md --></li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io">墨凌</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://mo0ling.github.io/posts/5cd48c5f.html">https://mo0ling.github.io/posts/5cd48c5f.html</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://mo0ling.github.io" target="_blank">墨凌的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Java%E9%9B%86%E5%90%88/">Java集合</a></div><div class="post_share"><div class="social-share" data-image="https://source.fomal.cc/img/default_cover_14.webp" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/ab0cc143.html" title="Java集合使用注意事项总结"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java集合使用注意事项总结</div></div></a></div><div class="next-post pull-right"><a href="/posts/a29e1f82.html" title="CopyOnWriteArrayList 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" onerror="onerror=null;src='/assets/r2.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">CopyOnWriteArrayList 源码分析</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/1e3222e7.html" title="ArrayBlockingQueue 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">ArrayBlockingQueue 源码分析</div></div></a></div><div><a href="/posts/f6649de1.html" title="ArrayList 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">ArrayList 源码分析</div></div></a></div><div><a href="/posts/7b4cee2b.html" title="ConcurrentHashMap 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">ConcurrentHashMap 源码分析</div></div></a></div><div><a href="/posts/a29e1f82.html" title="CopyOnWriteArrayList 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">CopyOnWriteArrayList 源码分析</div></div></a></div><div><a href="/posts/94b096a6.html" title="HashMap 源码分析"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">HashMap 源码分析</div></div></a></div><div><a href="/posts/b3565b2e.html" title="Java集合常见面试题总结(上)"><img class="cover" src="https://source.fomal.cc/img/default_cover_14.webp" alt="cover"><div class="content is-center"><div class="date"><i class="fas fa-history fa-fw"></i> 2023-11-12</div><div class="title">Java集合常见面试题总结(上)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#DelayQueue-%E7%AE%80%E4%BB%8B"><span class="toc-number">1.</span> <span class="toc-text">DelayQueue 简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DelayQueue-%E5%8F%91%E5%B1%95%E5%8F%B2"><span class="toc-number">2.</span> <span class="toc-text">DelayQueue 发展史</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DelayQueue-%E5%B8%B8%E8%A7%81%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E7%A4%BA%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">DelayQueue 常见使用场景示例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DelayQueue-%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="toc-number">4.</span> <span class="toc-text">DelayQueue 源码解析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E6%88%90%E5%91%98%E5%8F%98%E9%87%8F"><span class="toc-number">4.1.</span> <span class="toc-text">核心成员变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E6%96%B9%E6%B3%95"><span class="toc-number">4.2.</span> <span class="toc-text">构造方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E5%85%83%E7%B4%A0"><span class="toc-number">4.3.</span> <span class="toc-text">添加元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96%E5%85%83%E7%B4%A0"><span class="toc-number">4.4.</span> <span class="toc-text">获取元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E7%9C%8B%E5%85%83%E7%B4%A0"><span class="toc-number">4.5.</span> <span class="toc-text">查看元素</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DelayQueue-%E5%B8%B8%E8%A7%81%E9%9D%A2%E8%AF%95%E9%A2%98"><span class="toc-number">5.</span> <span class="toc-text">DelayQueue 常见面试题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">5.1.</span> <span class="toc-text">DelayQueue 的实现原理是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%98%AF%E5%90%A6%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%EF%BC%9F"><span class="toc-number">5.2.</span> <span class="toc-text">DelayQueue 的实现是否线程安全？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="toc-number">5.3.</span> <span class="toc-text">DelayQueue 的使用场景有哪些？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-%E4%B8%AD-Delayed-%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%9C%E7%94%A8%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">5.4.</span> <span class="toc-text">DelayQueue 中 Delayed 接口的作用是什么？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#DelayQueue-%E5%92%8C-Timer-TimerTask-%E7%9A%84%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">5.5.</span> <span class="toc-text">DelayQueue 和 Timer&#x2F;TimerTask 的区别是什么？</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="toc-number">6.</span> <span class="toc-text">参考文献</span></a></li></ol></div></div></div></div></main><footer id="footer" style="background-image: url('https://source.fomal.cc/img/default_cover_14.webp')"><div id="footer-wrap"><div class="copyright">&copy;2023  <i id="heartbeat" class="fa fas fa-heartbeat"></i> 墨凌</div><div class="footer_custom_text">你好, 欢迎来到我的博客!</div></div><link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/HCLonely/images@master/others/heartbeat.min.css"></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><a class="icon-V hidden" onclick="switchNightMode()" title="浅色和深色模式转换"><svg width="25" height="25" viewBox="0 0 1024 1024"><use id="modeicon" xlink:href="#icon-moon"></use></svg></a><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="fa-solid fa-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="fa-solid fa-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="fa-solid fa-arrow-rotate-right"></i></div><div class="rightMenu-item" id="menu-home"><i class="fa-solid fa-house"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" href="/archives/"><i class="fa-solid fa-archive"></i><span>文章归档</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="fa-solid fa-folder-open"></i><span>文章分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="fa-solid fa-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuNormal"><a class="rightMenu-item menu-link" id="menu-radompage" href="/random/index.html"><i class="fa-solid fa-shoe-prints"></i><span>随便逛逛</span></a><div class="rightMenu-item" id="menu-translate"><i class="fa-solid fa-earth-asia"></i><span>繁简切换</span></div><div class="rightMenu-item" id="menu-darkmode"><i class="fa-solid fa-moon"></i><span>切换模式</span></div></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.24/fancybox/fancybox.umd.min.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/instant.page/5.1.0/instantpage.min.js" type="module"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/node-snackbar/0.1.16/snackbar.min.js"></script><script>function panguFn () {
+  if (typeof pangu === 'object') pangu.autoSpacingPage()
+  else {
+    getScript('https://cdnjs.cloudflare.com/ajax/libs/pangu/4.0.7/pangu.min.js')
+      .then(() => {
+        pangu.autoSpacingPage()
+      })
+  }
+}
+
+function panguInit () {
+  if (true){
+    GLOBAL_CONFIG_SITE.isPost && panguFn()
+  } else {
+    panguFn()
+  }
+}
+
+document.addEventListener('DOMContentLoaded', panguInit)</script><script src="https://cdn.staticfile.org/algoliasearch/4.14.3/algoliasearch-lite.umd.min.js"></script><script src="https://cdn.staticfile.org/instantsearch.js/4.49.2/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script><div class="js-pjax"></div><script defer src="https://npm.elemecdn.com/jquery@latest/dist/jquery.min.js"></script><div class="aplayer no-destroy" data-id="7427714271" data-server="netease" data-type="playlist" data-fixed="true" data-mini="true" data-listFolded="false" data-order="random" data-lrctype="1" data-preload="none" data-autoplay="true" muted></div><script src="https://cdn.staticfile.org/jquery/3.6.3/jquery.min.js"></script><script async src="https://cdn1.tianli0.top/npm/vue@2.6.14/dist/vue.min.js"></script><script async src="https://cdn1.tianli0.top/npm/element-ui@2.15.6/lib/index.js"></script><script async src="https://cdn.bootcdn.net/ajax/libs/clipboard.js/2.0.11/clipboard.min.js"></script><script defer type="text/javascript" src="https://cdn1.tianli0.top/npm/sweetalert2@8.19.0/dist/sweetalert2.all.js"></script><script async src="//npm.elemecdn.com/pace-js@1.2.4/pace.min.js"></script><script defer src="https://cdn1.tianli0.top/gh/nextapps-de/winbox/dist/winbox.bundle.min.js"></script><script async src="//at.alicdn.com/t/c/font_3586335_hsivh70x0fm.js"></script><script async src="//at.alicdn.com/t/c/font_3636804_gr02jmjr3y9.js"></script><script async src="//at.alicdn.com/t/c/font_3612150_kfv55xn3u2g.js"></script><script async src="https://cdn.wpon.cn/2022-sucai/Gold-ingot.js"></script><canvas id="universe"></canvas><script defer data-pjax src="/js/rightMenu.js"></script><script async src="/js/diytitle.js"></script><script async src="/js/grayscale.js"></script><script async src="/js/cursor.js"></script><script async src="/js/universe.js"></script><script src="/js/sun_moon.js" async></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/canvas-nest.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script><script id="click-heart" src="https://cdnjs.cloudflare.com/ajax/libs/butterfly-extsrc/1.1.3/click-heart.min.js" async="async" mobile="false"></script><link rel="stylesheet" href="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://lf6-cdn-tos.bytecdntp.com/cdn/expire-1-M/aplayer/1.10.1/APlayer.min.js"></script><script src="https://cdn1.tianli0.top/npm/js-heo@1.0.12/metingjs/Meting.min.js"></script><script src="https://lib.baomitu.com/pjax/0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+
+  // removeEventListener
+  btf.removeGlobalFnEvent('pjax')
+  btf.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+
+  typeof disqusjs === 'object' && disqusjs.destroy()
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="algolia-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="search-wrap"><div id="algolia-search-input"></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-info"><div class="algolia-stats"></div><div class="algolia-poweredBy"></div></div></div></div></div><div id="search-mask"></div><script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.20.0/algoliasearch-lite.umd.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.57.0/instantsearch.production.min.js"></script><script src="/js/search/algolia.js"></script></div></div><!-- hexo injector body_end start --><script data-pjax>
+    function butterfly_categories_card_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<style>li.categoryBar-list-item{width:32.3%;}.categoryBar-list{max-height: 190px;overflow:auto;}.categoryBar-list::-webkit-scrollbar{width:0!important}@media screen and (max-width: 650px){.categoryBar-list{max-height: 160px;}}</style><div class="recent-post-item" style="height:auto;width:100%;padding:0px;"><div id="categoryBar"><ul class="categoryBar-list"></ul></div></div>';
+      console.log('已挂载butterfly_categories_card')
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      }
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+    butterfly_categories_card_injector_config()
+    }
+  </script><div class="js-pjax"><script async="async">var arr = document.getElementsByClassName('recent-post-item');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script><script async="async">var arr = document.getElementsByClassName('card-widget');
+for(var i = 0;i<arr.length;i++){
+    arr[i].classList.add('wow');
+    arr[i].classList.add('animate__zoomIn');
+    arr[i].setAttribute('data-wow-duration', '2s');
+    arr[i].setAttribute('data-wow-delay', '200ms');
+    arr[i].setAttribute('data-wow-offset', '30');
+    arr[i].setAttribute('data-wow-iteration', '1');
+  }</script></div><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow.min.js"></script><script defer src="https://npm.elemecdn.com/hexo-butterfly-wowjs/lib/wow_init.js"></script><script data-pjax>
+  function butterfly_clock_anzhiyu_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/loading.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock_anzhiyu')
+    if(parent_div_git) {
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var qweather_key = '68cca326e7b348b69328ea977b6186fe# 你的key';
+  var gaud_map_key = 'ba1713bd268fa5e98ff6fa04501dc306# 你的key';
+  var baidu_ak_key = 'undefined';
+  var flag = 0;
+  var clock_rectangle = '112.982279,28.19409';
+  var clock_default_rectangle_enable = 'false';
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_anzhiyu_injector_config();
+  }
+  </script><script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script><script data-pjax src="https://cdn.cbd.int/hexo-butterfly-clock-anzhiyu/lib/clock.min.js"></script><script data-pjax src="https://npm.elemecdn.com/hexo-filter-gitcalendar/lib/gitcalendar.js"></script><script data-pjax>
+  function gitcalendar_injector_config(){
+      var parent_div_git = document.getElementById('recent-posts');
+      var item_html = '<div class="recent-post-item" id="gitcalendarBar" style="width:100%;height:auto;padding:10px;"><style>#git_container{min-height: 280px}@media screen and (max-width:650px) {#git_container{min-height: 0px}}</style><div id="git_loading" style="width:10%;height:100%;margin:0 auto;display: block;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50" xml:space="preserve"><path fill="#d0d0d0" d="M25.251,6.461c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615V6.461z" transform="rotate(275.098 25 25)"><animatetransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animatetransform></path></svg><style>#git_container{display: none;}</style></div><div id="git_container"></div></div>';
+      parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+      console.log('已挂载gitcalendar')
+      }
+
+    if( document.getElementById('recent-posts') && (location.pathname ==='/'|| '/' ==='all')){
+        gitcalendar_injector_config()
+        GitCalendarInit("https://github-calendar-api-amber.vercel.app/api?mo0ling",['#d9e0df', '#c6e0dc', '#a8dcd4', '#9adcd2', '#89ded1', '#77e0d0', '#5fdecb', '#47dcc6', '#39dcc3', '#1fdabe', '#00dab9'],'mo0ling')
+    }
+  </script><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --></body></html>
